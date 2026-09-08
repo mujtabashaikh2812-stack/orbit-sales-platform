@@ -50,6 +50,8 @@ export default function LeadDetailPage({
   const [quoteInput, setQuoteInput] = useState<number | "">("");
   const [isQuoting, setIsQuoting] = useState(false);
   const [quoteSaved, setQuoteSaved] = useState(false);
+  const [enriching, setEnriching] = useState(false);
+  const [enrichError, setEnrichError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -69,6 +71,31 @@ export default function LeadDetailPage({
     const updated = await updateLeadStage(lead.id, targetStage, "owner");
     if (updated) {
       setLead(updated);
+    }
+  }
+
+  async function handleEnrichLead() {
+    if (!lead) return;
+    setEnriching(true);
+    setEnrichError(null);
+
+    try {
+      const res = await fetch("/api/leads/enrich", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.lead) {
+        setLead(data.lead);
+      } else {
+        setEnrichError(data.error || "Enrichment failed");
+      }
+    } catch {
+      setEnrichError("Failed to connect to enrichment service");
+    } finally {
+      setEnriching(false);
     }
   }
 
@@ -242,20 +269,33 @@ export default function LeadDetailPage({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-text-secondary">Verified Email:</span>
-                <div className="mt-1 flex items-center gap-1.5 font-mono">
+                <div className="mt-1 flex items-center gap-2 font-mono">
                   {lead.email ? (
                     <>
                       {lead.email_verified ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
                       ) : (
-                        <AlertCircle className="w-3.5 h-3.5 text-warning" />
+                        <AlertCircle className="w-3.5 h-3.5 text-warning shrink-0" />
                       )}
-                      <span className="text-text-primary">{lead.email}</span>
+                      <span className="text-text-primary truncate">{lead.email}</span>
                     </>
                   ) : (
-                    <span className="text-text-secondary">Unverified</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-text-secondary">Unverified</span>
+                      <button
+                        type="button"
+                        disabled={enriching}
+                        onClick={handleEnrichLead}
+                        className="px-2 py-0.5 text-[10px] font-sans font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded disabled:opacity-50"
+                      >
+                        {enriching ? "Enriching..." : "Enrich via Hunter"}
+                      </button>
+                    </div>
                   )}
                 </div>
+                {enrichError && (
+                  <div className="text-[10px] text-danger mt-1 font-mono">{enrichError}</div>
+                )}
               </div>
 
               <div>

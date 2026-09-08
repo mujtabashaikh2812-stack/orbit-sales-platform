@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getLeads, createLead, LeadDetail } from "@/lib/db/leads";
 import { LeadTable } from "@/components/leads/lead-table";
 import { LeadModal } from "@/components/leads/lead-modal";
+import { SourcingToolbar } from "@/components/leads/sourcing-toolbar";
 import { Plus, Sliders, RefreshCw } from "lucide-react";
 
 export default function LeadsPage() {
@@ -69,6 +70,12 @@ export default function LeadsPage() {
         </div>
       </div>
 
+      {/* Sourcing & Enrichment Engine Toolbar */}
+      <SourcingToolbar
+        sourcedCount={leads.filter((l) => l.stage === "sourced").length}
+        onRefresh={loadLeads}
+      />
+
       {/* Main Ledger Content */}
       {loading ? (
         <div className="border border-border bg-surface p-12 text-center rounded text-xs text-text-secondary font-mono">
@@ -101,7 +108,7 @@ export default function LeadsPage() {
           </div>
         </div>
       ) : (
-        <LeadTable initialLeads={leads} />
+        <LeadTable key={leads.length} initialLeads={leads} />
       )}
 
       {/* Add Lead Modal */}
