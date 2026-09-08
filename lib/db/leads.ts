@@ -328,15 +328,24 @@ export async function createLead(
 
 export async function updateLead(
   id: string,
-  partial: Partial<Lead>
+  partial: Partial<LeadDetail>
 ): Promise<LeadDetail | null> {
   const now = new Date().toISOString();
 
   if (isSupabaseConfigured()) {
     const supabase = createClient();
+    const {
+      requirements,
+      deal,
+      meetings,
+      stage_history,
+      messages,
+      ...leadFields
+    } = partial;
+
     const { data, error } = await supabase
       .from("leads")
-      .update({ ...partial, updated_at: now })
+      .update({ ...leadFields, updated_at: now })
       .eq("id", id)
       .select()
       .single();
