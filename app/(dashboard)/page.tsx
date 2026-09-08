@@ -1,58 +1,143 @@
+"use client";
+
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Clock, Plus } from "lucide-react";
+import { ArrowUpRight, Clock, Plus, Users, Calendar, Sparkles } from "lucide-react";
+import { getLeads, LeadDetail } from "@/lib/db/leads";
+import { LeadStage } from "@/lib/types";
+import { StageBadge } from "@/components/leads/stage-badge";
+import { cn } from "@/lib/utils";
 
-// The pipeline stages specified in Project_overview.md and database_schema.md
-const PIPELINE_STAGES = [
-  { id: "sourced", label: "Sourced", count: 12 },
-  { id: "enriched", label: "Enriched", count: 8 },
-  { id: "contacted", label: "Contacted", count: 14 },
-  { id: "replied", label: "Replied", count: 4 },
-  { id: "qualified", label: "Qualified", count: 2 },
-  { id: "meeting_booked", label: "Meeting booked", count: 3 },
-  { id: "priced", label: "Priced", count: 1 },
-  { id: "closed", label: "Closed", count: 2 },
+const PIPELINE_ORDER: { id: string; label: string }[] = [
+  { id: "sourced", label: "Sourced" },
+  { id: "enriched", label: "Enriched" },
+  { id: "contacted", label: "Contacted" },
+  { id: "replied", label: "Replied" },
+  { id: "qualified", label: "Qualified" },
+  { id: "meeting_booked", label: "Meeting booked" },
+  { id: "priced", label: "Priced" },
+  { id: "closed", label: "Closed" },
 ];
 
-const RECENT_ACTIVITY = [
-  {
-    id: "1",
-    company: "Acme Logistics",
-    contact: "Sarah Jenkins",
-    action: "Replied to initial outreach (interested in custom API pipeline)",
-    time: "2h ago",
-    stage: "replied",
-    badgeColor: "text-success border-success/30 bg-success/10",
-  },
-  {
-    id: "2",
-    company: "Nova Labs",
-    contact: "David Chen",
-    action: "Meeting booked for Thursday, 2:00 PM",
-    time: "5h ago",
-    stage: "meeting_booked",
-    badgeColor: "text-accent border-accent/30 bg-accent/10",
-  },
-  {
-    id: "3",
-    company: "Kestrel Bio",
-    contact: "Elena Rostova",
-    action: "Cold outreach email drafted (Dry-run mode logged)",
-    time: "8h ago",
-    stage: "contacted",
-    badgeColor: "text-warning border-warning/30 bg-warning/10",
-  },
-  {
-    id: "4",
-    company: "Vanguard Partners",
-    contact: "Marcus Vance",
-    action: "Lead sourced from Apollo and enriched with verified email",
-    time: "1d ago",
-    stage: "enriched",
-    badgeColor: "text-text-secondary border-border bg-surface",
-  },
-];
+interface ActivityItem {
+  id: string;
+  leadId: string;
+  company: string;
+  contact: string;
+  action: string;
+  stage: LeadStage;
+  timestamp: string;
+}
 
 export default function DashboardPage() {
+  const [leads, setLeads] = useState<LeadDetail[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getLeads();
+        setLeads(data);
+      } catch (err) {
+        console.error("Failed to load dashboard leads:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Compute live pipeline metrics
+  const { contactedCount, replyRate, meetingsCount, pipelineCounts } = useMemo(() => {
+    const contactedStages: LeadStage[] = [
+      "contacted",
+      "replied",
+      "qualified",
+      "meeting_booked",
+      "priced",
+      "won",
+      "lost",
+    ];
+    const repliedStages: LeadStage[] = [
+      "replied",
+      "qualified",
+      "meeting_booked",
+      "priced",
+      "won",
+      "lost",
+    ];
+
+    const contacted = leads.filter((l) => contactedStages.includes(l.stage)).length;
+    const replied = leads.filter((l) => repliedStages.includes(l.stage)).length;
+    const rate = contacted > 0 ? ((replied / contacted) * 100).toFixed(1) : "0.0";
+
+    const meetings = leads.reduce((acc, l) => acc + (l.meetings?.length || 0), 0);
+
+    const counts: Record<string, number> = {
+      sourced: leads.filter((l) => l.stage === "sourced").length,
+      enriched: leads.filter((l) => l.stage === "enriched").length,
+      contacted: leads.filter((l) => l.stage === "contacted").length,
+      replied: leads.filter((l) => l.stage === "replied").length,
+      qualified: leads.filter((l) => l.stage === "qualified").length,
+      meeting_booked: leads.filter((l) => l.stage === "meeting_booked").length,
+      priced: leads.filter((l) => l.stage === "priced").length,
+      closed: leads.filter((l) => l.stage === "won" || l.stage === "lost").length,
+    };
+
+    return {
+      contactedCount: contacted,
+      replyRate: rate,
+      meetingsCount: meetings > 0 ? meetings : leads.filter((l) => l.stage === "meeting_booked").length,
+      pipelineCounts: counts,
+    };
+  }, [leads]);
+
+  // Generate dynamic recent activity from stage transitions, messages, and meetings
+  const recentActivities: ActivityItem[] = useMemo(() => {
+    const items: ActivityItem[] = [];
+
+    for (const lead of leads) {
+      if (lead.stage_history && lead.stage_history.length > 0) {
+        const latestHistory = lead.stage_history[lead.stage_history.length - 1];
+        items.push({
+          id: `hist-${latestHistory.id}`,
+          leadId: lead.id,
+          company: lead.company_name,
+          contact: lead.contact_name,
+          action: latestHistory.from_stage
+            ? `Transitioned pipeline stage: ${latestHistory.from_stage} → ${latestHistory.to_stage} (${latestHistory.triggered_by})`
+            : `Added to pipeline as ${latestHistory.to_stage}`,
+          stage: lead.stage,
+          timestamp: latestHistory.changed_at,
+        });
+      } else {
+        items.push({
+          id: `lead-${lead.id}`,
+          leadId: lead.id,
+          company: lead.company_name,
+          contact: lead.contact_name,
+          action: `Active in ${lead.stage.replace("_", " ")} stage`,
+          stage: lead.stage,
+          timestamp: lead.stage_updated_at || lead.updated_at,
+        });
+      }
+    }
+
+    return items
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 5);
+  }, [leads]);
+
+  function formatTimeAgo(iso: string): string {
+    const ms = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(ms / 60000);
+    if (mins < 60) return `${Math.max(1, mins)}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
+
   return (
     <div className="space-y-12">
       {/* Page Header */}
@@ -71,7 +156,7 @@ export default function DashboardPage() {
             className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Add Lead</span>
+            <span>Manage Leads</span>
           </Link>
         </div>
       </div>
@@ -81,11 +166,11 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 border border-border divide-y md:divide-y-0 md:divide-x divide-border bg-surface">
           <div className="p-6">
             <div className="text-xs text-text-secondary tracking-normal">
-              This week contacted
+              Active contacted leads
             </div>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="font-mono text-3xl text-text-primary font-medium">
-                14
+                {contactedCount}
               </span>
               <span className="text-xs text-text-secondary font-mono">leads</span>
             </div>
@@ -93,14 +178,14 @@ export default function DashboardPage() {
 
           <div className="p-6">
             <div className="text-xs text-text-secondary tracking-normal">
-              Reply rate
+              Inbound reply rate
             </div>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="font-mono text-3xl text-accent font-medium">
-                18.4%
+                {replyRate}%
               </span>
               <span className="text-xs text-success font-mono flex items-center">
-                ↑ 2.1%
+                ↑ active
               </span>
             </div>
           </div>
@@ -111,7 +196,7 @@ export default function DashboardPage() {
             </div>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="font-mono text-3xl text-text-primary font-medium">
-                3
+                {meetingsCount}
               </span>
               <span className="text-xs text-text-secondary font-mono">confirmed</span>
             </div>
@@ -122,7 +207,7 @@ export default function DashboardPage() {
       {/* Pipeline Overview (Quiet horizontal kanban per design.md) */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-text-primary">Pipeline</h2>
+          <h2 className="text-sm font-medium text-text-primary">Pipeline Progression</h2>
           <Link
             href="/leads"
             className="text-xs text-text-secondary hover:text-accent flex items-center gap-1 transition-colors"
@@ -133,15 +218,19 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 border border-border divide-x divide-y sm:divide-y-0 divide-border bg-surface">
-          {PIPELINE_STAGES.map((stage) => (
-            <div key={stage.id} className="p-4 hover:bg-surface-raised transition-colors">
+          {PIPELINE_ORDER.map((stage) => (
+            <Link
+              key={stage.id}
+              href={`/leads`}
+              className="p-4 hover:bg-surface-raised transition-colors block"
+            >
               <div className="text-xs text-text-secondary truncate">
                 {stage.label}
               </div>
-              <div className="mt-2 font-mono text-xl text-text-primary">
-                {stage.count}
+              <div className="mt-2 font-mono text-xl text-text-primary font-medium">
+                {loading ? "..." : pipelineCounts[stage.id] ?? 0}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -156,39 +245,46 @@ export default function DashboardPage() {
           </span>
         </div>
 
-        <div className="border border-border divide-y divide-border bg-surface rounded">
-          {RECENT_ACTIVITY.map((item) => (
-            <div
-              key={item.id}
-              className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-surface-raised transition-colors duration-150"
-            >
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-text-primary">
-                    {item.company}
-                  </span>
-                  <span className="text-xs text-text-secondary">·</span>
-                  <span className="text-xs text-text-secondary">
-                    {item.contact}
-                  </span>
-                </div>
-                <div className="text-xs text-text-secondary prose-ledger">
-                  {item.action}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 shrink-0">
-                <span
-                  className={`text-[11px] font-mono px-2 py-0.5 rounded-sm border ${item.badgeColor}`}
-                >
-                  {item.stage}
-                </span>
-                <span className="text-xs font-mono text-text-secondary min-w-[50px] text-right">
-                  {item.time}
-                </span>
-              </div>
+        <div className="border border-border divide-y divide-border bg-surface rounded overflow-hidden">
+          {loading ? (
+            <div className="p-8 text-center text-xs font-mono text-text-secondary">
+              Loading activity records...
             </div>
-          ))}
+          ) : recentActivities.length === 0 ? (
+            <div className="p-8 text-center text-xs text-text-secondary">
+              No activity recorded yet — add your ICP criteria in Settings to start sourcing.
+            </div>
+          ) : (
+            recentActivities.map((item) => (
+              <Link
+                key={item.id}
+                href={`/leads/${item.leadId}`}
+                className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-surface-raised transition-colors duration-150 block"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-text-primary hover:text-accent">
+                      {item.company}
+                    </span>
+                    <span className="text-xs text-text-secondary">·</span>
+                    <span className="text-xs text-text-secondary">
+                      {item.contact}
+                    </span>
+                  </div>
+                  <div className="text-xs text-text-secondary prose-ledger">
+                    {item.action}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 shrink-0">
+                  <StageBadge stage={item.stage} />
+                  <span className="text-xs font-mono text-text-secondary min-w-[50px] text-right">
+                    {formatTimeAgo(item.timestamp)}
+                  </span>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
     </div>
