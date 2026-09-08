@@ -242,7 +242,13 @@ export async function getLeads(): Promise<LeadDetail[]> {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("leads")
-      .select("*")
+      .select(`
+        *,
+        requirements (*),
+        deals (*),
+        meetings (*),
+        stage_history (*)
+      `)
       .order("created_at", { ascending: false });
 
     if (!error && data && data.length > 0) {

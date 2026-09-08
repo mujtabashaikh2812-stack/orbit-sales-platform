@@ -28,6 +28,8 @@ import {
 import { cn } from "@/lib/utils";
 import { OutreachModal } from "@/components/outreach/outreach-modal";
 import { ReplySimulatorModal } from "@/components/leads/reply-simulator-modal";
+import { MeetingBookingModal } from "@/components/meetings/meeting-booking-modal";
+import { QuoteRelayModal } from "@/components/deals/quote-relay-modal";
 
 const PIPELINE_SEQUENCE: LeadStage[] = [
   "sourced",
@@ -56,6 +58,8 @@ export default function LeadDetailPage({
   const [enrichError, setEnrichError] = useState<string | null>(null);
   const [isOutreachModalOpen, setIsOutreachModalOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
 
   async function loadLead() {
     setLoading(true);
@@ -123,6 +127,23 @@ export default function LeadDetailPage({
     });
     setQuoteSaved(true);
     setTimeout(() => setQuoteSaved(false), 2000);
+  }
+
+  async function handleCloseDeal(outcome: "won" | "lost") {
+    if (!lead) return;
+    try {
+      const res = await fetch("/api/deals/close", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id, outcome }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadLead();
+      }
+    } catch {
+      // error handled
+    }
   }
 
   if (loading) {
@@ -207,6 +228,15 @@ export default function LeadDetailPage({
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Draft Cold Outreach</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsMeetingModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary bg-surface border border-border hover:border-accent hover:text-accent transition-colors rounded"
+          >
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Book Meeting</span>
           </button>
 
           <div className="flex items-center gap-2">
@@ -449,10 +479,39 @@ export default function LeadDetailPage({
               </div>
 
               {lead.deal && (
-                <div className="text-xs font-mono text-text-secondary flex items-center gap-3 pt-2">
-                  <span>Current quote: <strong className="text-accent">${lead.deal.quoted_amount.toLocaleString()} {lead.deal.currency}</strong></span>
-                  <span>·</span>
-                  <span>Status: <strong className="text-text-primary">{lead.deal.status}</strong></span>
+                <div className="space-y-3 pt-2">
+                  <div className="text-xs font-mono text-text-secondary flex items-center gap-3">
+                    <span>Current quote: <strong className="text-accent">${lead.deal.quoted_amount.toLocaleString()} {lead.deal.currency}</strong></span>
+                    <span>·</span>
+                    <span>Status: <strong className="text-text-primary uppercase">{lead.deal.status}</strong></span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsQuoteModalOpen(true)}
+                      className="px-3.5 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded inline-flex items-center gap-1.5"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Format & Send Quote (AI Relay)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCloseDeal("won")}
+                      className="px-3 py-1.5 text-xs font-mono text-success border border-success/40 bg-success/10 hover:bg-success/20 transition-colors rounded"
+                    >
+                      ✓ Mark Won
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCloseDeal("lost")}
+                      className="px-3 py-1.5 text-xs font-mono text-danger border border-danger/40 bg-danger/10 hover:bg-danger/20 transition-colors rounded"
+                    >
+                      ✕ Mark Lost
+                    </button>
+                  </div>
                 </div>
               )}
             </form>
@@ -462,13 +521,22 @@ export default function LeadDetailPage({
         {/* Right Column (Audit Trail & Activity) */}
         <div className="space-y-6">
           {/* Scheduled Meetings Card */}
-          {lead.meetings && lead.meetings.length > 0 && (
-            <div className="border border-border bg-surface p-5 rounded space-y-3">
-              <div className="flex items-center gap-2 border-b border-border pb-2 text-sm font-medium text-text-primary">
+          <div className="border border-border bg-surface p-5 rounded space-y-3">
+            <div className="flex items-center justify-between border-b border-border pb-2 text-sm font-medium text-text-primary">
+              <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-accent" />
                 <span>Scheduled Meeting</span>
               </div>
-              {lead.meetings.map((m) => (
+              <button
+                type="button"
+                onClick={() => setIsMeetingModalOpen(true)}
+                className="text-[10px] font-mono text-accent hover:underline"
+              >
+                + Book Meeting
+              </button>
+            </div>
+            {lead.meetings && lead.meetings.length > 0 ? (
+              lead.meetings.map((m) => (
                 <div key={m.id} className="space-y-1.5 text-xs">
                   <div className="font-mono text-text-primary">
                     {new Date(m.scheduled_at).toLocaleString("en-US", {
@@ -480,13 +548,22 @@ export default function LeadDetailPage({
                     })}
                   </div>
                   <div className="text-text-secondary">{m.notes}</div>
+                  {m.google_event_id && (
+                    <div className="text-[10px] font-mono text-text-secondary truncate">
+                      ID: {m.google_event_id}
+                    </div>
+                  )}
                   <span className="inline-block text-[10px] font-mono border border-success/30 bg-success/10 text-success px-1.5 py-0.5 rounded-sm">
                     {m.status}
                   </span>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            ) : (
+              <div className="text-xs text-text-secondary">
+                No meetings scheduled yet. Click &quot;+ Book Meeting&quot; to schedule a discovery call.
+              </div>
+            )}
+          </div>
 
           {/* Email Outreach Thread Card */}
           <div className="border border-border bg-surface p-5 rounded space-y-3">
@@ -624,6 +701,22 @@ export default function LeadDetailPage({
         onClose={() => setIsReplyModalOpen(false)}
         lead={lead}
         onProcessed={loadLead}
+      />
+
+      {/* Meeting Booking Modal */}
+      <MeetingBookingModal
+        isOpen={isMeetingModalOpen}
+        onClose={() => setIsMeetingModalOpen(false)}
+        lead={lead}
+        onBooked={loadLead}
+      />
+
+      {/* Quote Relay Modal */}
+      <QuoteRelayModal
+        isOpen={isQuoteModalOpen}
+        onClose={() => setIsQuoteModalOpen(false)}
+        lead={lead}
+        onSent={loadLead}
       />
     </div>
   );
