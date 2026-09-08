@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #12141A;
+  --surface: #1B1E26;
+  --surface-raised: #22252E;
+  --border: #2A2E38;
+  --text-primary: #EDEBE6;
+  --text-secondary: #9B9A94;
+  --accent: #B98F4D;
+  --success: #6B8F71;
+  --danger: #B0563A;
+  --warning: #C9A15A;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--ink);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Explicitly eliminate shadows per design.md */
+*, *::before, *::after {
+  box-shadow: none !important;
+}
+
+/* Custom scrollbars matching dark ledger aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Row stage transition pulse highlight */
+@keyframes stageHighlight {
+  0% {
+    background-color: rgba(185, 143, 77, 0.18);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.stage-transition-pulse {
+  animation: stageHighlight 600ms ease-out forwards;
+}
+
+/* Prose max-width restriction per design.md (under 80 characters) */
+.prose-ledger {
+  max-width: 72ch;
+}
