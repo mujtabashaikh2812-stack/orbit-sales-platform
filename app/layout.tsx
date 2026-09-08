@@ -26,6 +26,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Orbit — AI Sales Outreach & CRM",
   description: "End-to-end AI sales outreach pipeline and CRM ledger.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
