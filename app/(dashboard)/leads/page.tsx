@@ -2,22 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getLeads, createLead, LeadDetail } from "@/lib/db/leads";
+import { getLeads, getLeadsSync, createLead, LeadDetail } from "@/lib/db/leads";
 import { LeadTable } from "@/components/leads/lead-table";
 import { LeadModal } from "@/components/leads/lead-modal";
 import { SourcingToolbar } from "@/components/leads/sourcing-toolbar";
 import { Plus, Sliders, RefreshCw } from "lucide-react";
 
 export default function LeadsPage() {
-  const [leads, setLeads] = useState<LeadDetail[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [leads, setLeads] = useState<LeadDetail[]>(() => getLeadsSync());
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   async function loadLeads() {
-    setLoading(true);
     const data = await getLeads();
     setLeads(data);
-    setLoading(false);
   }
 
   useEffect(() => {

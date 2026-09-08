@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { 
   getLeadById, 
+  getLeadByIdSync,
   updateLeadStage, 
   updateLead, 
   LeadDetail 
@@ -49,9 +50,12 @@ export default function LeadDetailPage({
   const resolvedParams = use(params);
   const router = useRouter();
 
-  const [lead, setLead] = useState<LeadDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [quoteInput, setQuoteInput] = useState<number | "">("");
+  const [lead, setLead] = useState<LeadDetail | null>(() => getLeadByIdSync(resolvedParams.id));
+  const [loading, setLoading] = useState(false);
+  const [quoteInput, setQuoteInput] = useState<number | "">(() => {
+    const initial = getLeadByIdSync(resolvedParams.id);
+    return initial?.deal?.quoted_amount ?? "";
+  });
   const [isQuoting, setIsQuoting] = useState(false);
   const [quoteSaved, setQuoteSaved] = useState(false);
   const [enriching, setEnriching] = useState(false);
@@ -62,13 +66,13 @@ export default function LeadDetailPage({
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
 
   async function loadLead() {
-    setLoading(true);
     const data = await getLeadById(resolvedParams.id);
-    setLead(data);
-    if (data?.deal?.quoted_amount) {
-      setQuoteInput(data.deal.quoted_amount);
+    if (data) {
+      setLead(data);
+      if (data?.deal?.quoted_amount) {
+        setQuoteInput(data.deal.quoted_amount);
+      }
     }
-    setLoading(false);
   }
 
   useEffect(() => {

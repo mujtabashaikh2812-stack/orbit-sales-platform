@@ -12,7 +12,7 @@ import {
   ArrowRight,
   Filter
 } from "lucide-react";
-import { getLeads, LeadDetail } from "@/lib/db/leads";
+import { getLeads, getLeadsSync, LeadDetail } from "@/lib/db/leads";
 import { Meeting } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -24,20 +24,17 @@ interface EnrichedMeeting extends Meeting {
 }
 
 export default function MeetingsPage() {
-  const [leads, setLeads] = useState<LeadDetail[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [leads, setLeads] = useState<LeadDetail[]>(() => getLeadsSync());
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
 
   useEffect(() => {
     async function loadData() {
-      setLoading(true);
       try {
         const data = await getLeads();
         setLeads(data);
       } catch (err) {
         console.error("Failed to load meetings:", err);
-      } finally {
-        setLoading(false);
       }
     }
     loadData();

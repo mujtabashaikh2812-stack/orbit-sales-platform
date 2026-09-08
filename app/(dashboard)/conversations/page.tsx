@@ -2,28 +2,32 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getLeads, LeadDetail } from "@/lib/db/leads";
+import { getLeads, getLeadsSync, LeadDetail } from "@/lib/db/leads";
 import { StageBadge } from "@/components/leads/stage-badge";
 import { MessageSquare, ArrowUpRight, Sparkles, User, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function filterActiveConversations(all: LeadDetail[]) {
+  return all.filter(
+    (l) => (l.messages && l.messages.length > 0) || ["contacted", "replied", "qualified", "meeting_booked"].includes(l.stage)
+  );
+}
+
 export default function ConversationsPage() {
-  const [leads, setLeads] = useState<LeadDetail[]>([]);
-  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [leads, setLeads] = useState<LeadDetail[]>(() => filterActiveConversations(getLeadsSync()));
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(() => {
+    const initial = filterActiveConversations(getLeadsSync());
+    return initial[0]?.id || null;
+  });
+  const [loading, setLoading] = useState(false);
 
   async function loadData() {
-    setLoading(true);
     const all = await getLeads();
-    // Leads with message history or in outreach stages
-    const active = all.filter(
-      (l) => (l.messages && l.messages.length > 0) || ["contacted", "replied", "qualified", "meeting_booked"].includes(l.stage)
-    );
+    const active = filterActiveConversations(all);
     setLeads(active);
     if (active.length > 0 && !selectedLeadId) {
       setSelectedLeadId(active[0].id);
     }
-    setLoading(false);
   }
 
   useEffect(() => {

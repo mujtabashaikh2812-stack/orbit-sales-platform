@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Clock, Plus, Users, Calendar, Sparkles } from "lucide-react";
-import { getLeads, LeadDetail } from "@/lib/db/leads";
+import { getLeads, getLeadsSync, LeadDetail } from "@/lib/db/leads";
 import { LeadStage } from "@/lib/types";
 import { StageBadge } from "@/components/leads/stage-badge";
 import { cn } from "@/lib/utils";
@@ -30,8 +30,8 @@ interface ActivityItem {
 }
 
 export default function DashboardPage() {
-  const [leads, setLeads] = useState<LeadDetail[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [leads, setLeads] = useState<LeadDetail[]>(() => getLeadsSync());
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -40,8 +40,6 @@ export default function DashboardPage() {
         setLeads(data);
       } catch (err) {
         console.error("Failed to load dashboard leads:", err);
-      } finally {
-        setLoading(false);
       }
     }
     loadData();

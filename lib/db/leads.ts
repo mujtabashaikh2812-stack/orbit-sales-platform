@@ -237,6 +237,43 @@ export const INITIAL_LEADS: LeadDetail[] = [
 // In-memory / storage bridge for preview & live fallback
 let localStore: LeadDetail[] = [...INITIAL_LEADS];
 
+const CACHE_KEY = "orbit_leads_ledger_v1";
+
+function getCachedStore(): LeadDetail[] {
+  if (typeof window !== "undefined") {
+    try {
+      const cached = window.localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localStore = parsed;
+          return localStore;
+        }
+      }
+    } catch {}
+  }
+  return localStore;
+}
+
+function persistStore(data: LeadDetail[]) {
+  localStore = data;
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    } catch {}
+  }
+}
+
+export function getLeadsSync(): LeadDetail[] {
+  return [...getCachedStore()];
+}
+
+export function getLeadByIdSync(id: string): LeadDetail | null {
+  const list = getCachedStore();
+  const found = list.find((l) => l.id === id);
+  return found ? { ...found } : null;
+}
+
 export async function getLeads(): Promise<LeadDetail[]> {
   if (isSupabaseConfigured()) {
     const supabase = createClient();
@@ -252,11 +289,12 @@ export async function getLeads(): Promise<LeadDetail[]> {
       .order("created_at", { ascending: false });
 
     if (!error && data && data.length > 0) {
+      persistStore(data as LeadDetail[]);
       return data as LeadDetail[];
     }
   }
 
-  return [...localStore];
+  return getLeadsSync();
 }
 
 export async function getLeadById(id: string): Promise<LeadDetail | null> {
@@ -279,8 +317,7 @@ export async function getLeadById(id: string): Promise<LeadDetail | null> {
     }
   }
 
-  const found = localStore.find((l) => l.id === id);
-  return found ? { ...found } : null;
+  return getLeadByIdSync(id);
 }
 
 export async function createLead(
@@ -329,6 +366,7 @@ export async function createLead(
   }
 
   localStore.unshift(newLead);
+  persistStore([...localStore]);
   return newLead;
 }
 
@@ -368,6 +406,7 @@ export async function updateLead(
       ...partial,
       updated_at: now,
     };
+    persistStore([...localStore]);
     return localStore[index];
   }
 
@@ -426,6 +465,7 @@ export async function updateLeadStage(
       updated_at: now,
       stage_history: updatedHistory,
     };
+    persistStore([...localStore]);
     return localStore[index];
   }
 
