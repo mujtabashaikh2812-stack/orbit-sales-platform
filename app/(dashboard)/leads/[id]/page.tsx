@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OutreachModal } from "@/components/outreach/outreach-modal";
+import { ReplySimulatorModal } from "@/components/leads/reply-simulator-modal";
 
 const PIPELINE_SEQUENCE: LeadStage[] = [
   "sourced",
@@ -54,6 +55,7 @@ export default function LeadDetailPage({
   const [enriching, setEnriching] = useState(false);
   const [enrichError, setEnrichError] = useState<string | null>(null);
   const [isOutreachModalOpen, setIsOutreachModalOpen] = useState(false);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   async function loadLead() {
     setLoading(true);
@@ -493,13 +495,23 @@ export default function LeadDetailPage({
                 <Send className="w-4 h-4 text-accent" />
                 <span>Outreach Thread</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsOutreachModalOpen(true)}
-                className="text-[10px] font-mono text-accent hover:underline"
-              >
-                + New message
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsReplyModalOpen(true)}
+                  className="text-[10px] font-mono text-success hover:underline"
+                >
+                  + Simulate reply
+                </button>
+                <span className="text-text-secondary text-[10px]">·</span>
+                <button
+                  type="button"
+                  onClick={() => setIsOutreachModalOpen(true)}
+                  className="text-[10px] font-mono text-accent hover:underline"
+                >
+                  + New email
+                </button>
+              </div>
             </div>
 
             {lead.messages && lead.messages.length > 0 ? (
@@ -515,8 +527,26 @@ export default function LeadDetailPage({
                     )}
                   >
                     <div className="flex items-center justify-between text-[10px] font-mono">
-                      <span className="text-text-secondary">
-                        {msg.direction === "outbound" ? "OUTBOUND (Claude AI)" : "INBOUND REPLY"}
+                      <span className="text-text-secondary flex items-center gap-1.5">
+                        <span>
+                          {msg.direction === "outbound" ? "OUTBOUND (Claude AI)" : "INBOUND REPLY"}
+                        </span>
+                        {msg.classified_intent && (
+                          <span
+                            className={cn(
+                              "px-1 py-0.2 rounded-xs border text-[9px] uppercase",
+                              msg.classified_intent === "interested"
+                                ? "border-success/40 bg-success/15 text-success"
+                                : msg.classified_intent === "not_interested"
+                                ? "border-danger/40 bg-danger/15 text-danger"
+                                : msg.classified_intent === "question"
+                                ? "border-accent/40 bg-accent/15 text-accent"
+                                : "border-border bg-ink text-text-secondary"
+                            )}
+                          >
+                            {msg.classified_intent.replace("_", " ")}
+                          </span>
+                        )}
                       </span>
                       <span className="text-text-secondary">
                         {msg.sent_at ? new Date(msg.sent_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
@@ -586,6 +616,14 @@ export default function LeadDetailPage({
         onClose={() => setIsOutreachModalOpen(false)}
         lead={lead}
         onSent={loadLead}
+      />
+
+      {/* Inbound Reply Simulator / Logger Modal */}
+      <ReplySimulatorModal
+        isOpen={isReplyModalOpen}
+        onClose={() => setIsReplyModalOpen(false)}
+        lead={lead}
+        onProcessed={loadLead}
       />
     </div>
   );
