@@ -124,8 +124,16 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
       {/* Ledger Table */}
       <div className="border border-border bg-surface rounded overflow-hidden">
         {filteredLeads.length === 0 ? (
-          <div className="p-8 text-center text-xs text-text-secondary">
-            No leads matching current filters.
+          <div className="p-12 text-center text-xs text-text-secondary space-y-2">
+            {leads.length === 0 ? (
+              <p>
+                No leads yet — configure your ICP criteria in Settings or click &quot;Source New Leads&quot; above to begin.
+              </p>
+            ) : (
+              <p>
+                No leads found matching current search query or stage filter. Try adjusting your query or selecting &quot;All leads&quot;.
+              </p>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">

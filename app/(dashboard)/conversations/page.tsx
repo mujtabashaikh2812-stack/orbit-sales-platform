@@ -78,7 +78,7 @@ export default function ConversationsPage() {
                 href="/leads"
                 className="px-3.5 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded inline-block"
               >
-                Go to Leads
+                View leads ledger
               </Link>
             </div>
           </div>
