@@ -24,6 +24,15 @@ export interface IcpCriteria {
   created_at: string;
 }
 
+export type LeadSource =
+  | "apollo"
+  | "hunter"
+  | "google_maps"
+  | "contra"
+  | "yellow_pages"
+  | "manual"
+  | "csv_import";
+
 export interface Lead {
   id: string;
   user_id: string;
@@ -33,9 +42,11 @@ export interface Lead {
   contact_title?: string | null;
   email?: string | null;
   email_verified: boolean;
-  source: "apollo" | "hunter" | "manual";
+  source: LeadSource;
   company_domain?: string | null;
   company_summary?: string | null;
+  phone?: string | null;
+  location?: string | null;
   stage: LeadStage;
   stage_updated_at: string;
   created_at: string;

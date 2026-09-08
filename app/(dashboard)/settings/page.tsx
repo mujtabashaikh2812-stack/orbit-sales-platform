@@ -12,7 +12,10 @@ import {
   CheckCircle2, 
   ShieldAlert,
   Clock,
-  Ban
+  Ban,
+  MapPin,
+  Briefcase,
+  Building2
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -310,6 +313,57 @@ export default function SettingsPage() {
             <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               <span>Gateway Ready</span>
+            </span>
+          </div>
+
+          {/* Google Maps Places */}
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <MapPin className="w-4 h-4 text-sky-400" />
+              </div>
+              <div>
+                <div className="text-sm font-medium text-text-primary">Google Maps Places Engine</div>
+                <div className="text-xs text-text-muted">Local business extraction, clinics, practices, reviews & phone discovery</div>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-sky-500/40 bg-sky-500/10 text-sky-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              <span>Places Active</span>
+            </span>
+          </div>
+
+          {/* Contra */}
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Briefcase className="w-4 h-4 text-purple-400" />
+              </div>
+              <div>
+                <div className="text-sm font-medium text-text-primary">Contra Client & Project Gateway</div>
+                <div className="text-xs text-text-muted">High-growth startups and venture-backed companies hiring tech agencies</div>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-purple-500/40 bg-purple-500/10 text-purple-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+              <span>Network Active</span>
+            </span>
+          </div>
+
+          {/* YellowPages */}
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Building2 className="w-4 h-4 text-amber-400" />
+              </div>
+              <div>
+                <div className="text-sm font-medium text-text-primary">YellowPages Commercial Directory</div>
+                <div className="text-xs text-text-muted">Mid-market industrial, logistics, manufacturing, and commercial contractors</div>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>Directory Ready</span>
             </span>
           </div>
         </div>

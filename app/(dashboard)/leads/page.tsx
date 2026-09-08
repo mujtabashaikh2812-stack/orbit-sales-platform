@@ -6,12 +6,17 @@ import { getLeads, getLeadsSync, createLead, LeadDetail } from "@/lib/db/leads";
 import { LeadTable } from "@/components/leads/lead-table";
 import { LeadModal } from "@/components/leads/lead-modal";
 import { SourcingToolbar } from "@/components/leads/sourcing-toolbar";
-import { Plus, Sliders, RefreshCw } from "lucide-react";
+import { Plus, Sliders, RefreshCw, Check, AlertCircle, Info, Sparkles } from "lucide-react";
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<LeadDetail[]>(() => getLeadsSync());
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [statusBanner, setStatusBanner] = useState<{
+    type: "success" | "info" | "error";
+    text: string;
+  } | null>(null);
 
   async function loadLeads() {
     const data = await getLeads();
@@ -23,10 +28,89 @@ export default function LeadsPage() {
   }, []);
 
   async function handleCreateLead(
-    newLeadData: Parameters<typeof createLead>[0]
+    newLeadData: Parameters<typeof createLead>[0],
+    options?: { autoContact?: boolean }
   ) {
-    const created = await createLead(newLeadData);
+    setStatusBanner(null);
+    let created = await createLead(newLeadData);
     setLeads((prev) => [created, ...prev]);
+
+    if (options?.autoContact) {
+      setStatusBanner({
+        type: "info",
+        text: `Initiating autonomous cold outreach for ${created.contact_name}...`,
+      });
+
+      // 1. If email missing but domain present, auto-enrich
+      if (!created.email && created.company_domain) {
+        try {
+          const enrichRes = await fetch("/api/leads/enrich", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ leadId: created.id }),
+          });
+          const enrichData = await enrichRes.json();
+          if (enrichData.success && enrichData.lead) {
+            created = enrichData.lead;
+          }
+        } catch {}
+      }
+
+      // 2. Draft and send outreach if email is present
+      if (created.email) {
+        try {
+          const draftRes = await fetch("/api/outreach/draft", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ leadId: created.id }),
+          });
+          const draftData = await draftRes.json();
+
+          if (draftData.success && draftData.draft) {
+            const sendRes = await fetch("/api/outreach/send", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                leadId: created.id,
+                subject: draftData.draft.subject,
+                body: draftData.draft.body,
+              }),
+            });
+            const sendData = await sendRes.json();
+
+            if (sendData.success) {
+              setStatusBanner({
+                type: "success",
+                text: `Lead enrolled & cold outreach dispatched to ${created.contact_name} (${created.email}) via Claude AI (Dry-Run Mode safe).`,
+              });
+            } else {
+              setStatusBanner({
+                type: "error",
+                text: `Lead enrolled, but email dispatch failed: ${sendData.error || "Unknown error"}`,
+              });
+            }
+          }
+        } catch {
+          setStatusBanner({
+            type: "error",
+            text: `Lead enrolled, but network error occurred during automated outreach dispatch.`,
+          });
+        }
+      } else {
+        setStatusBanner({
+          type: "info",
+          text: `Lead ${created.company_name} enrolled in ledger. Cold outreach skipped because no verified email was provided or discovered.`,
+        });
+      }
+
+      // Reload fresh leads ledger state
+      await loadLeads();
+    } else {
+      setStatusBanner({
+        type: "success",
+        text: `Successfully enrolled ${created.company_name} (${created.contact_name}) into ledger.`,
+      });
+    }
   }
 
   return (
@@ -73,6 +157,28 @@ export default function LeadsPage() {
         sourcedCount={leads.filter((l) => l.stage === "sourced").length}
         onRefresh={loadLeads}
       />
+
+      {/* Live Action Status Banner */}
+      {statusBanner && (
+        <div
+          className={`text-xs px-4 py-3 rounded-xl flex items-center gap-3 border font-mono animate-fadeIn ${
+            statusBanner.type === "success"
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : statusBanner.type === "info"
+              ? "border-accent/35 bg-accent/10 text-accent"
+              : "border-rose-500/30 bg-rose-500/10 text-rose-400"
+          }`}
+        >
+          {statusBanner.type === "success" ? (
+            <Check className="w-4 h-4 shrink-0" />
+          ) : statusBanner.type === "info" ? (
+            <Sparkles className="w-4 h-4 shrink-0 text-accent" />
+          ) : (
+            <AlertCircle className="w-4 h-4 shrink-0" />
+          )}
+          <span className="leading-relaxed">{statusBanner.text}</span>
+        </div>
+      )}
 
       {/* Main Ledger Content */}
       {loading ? (

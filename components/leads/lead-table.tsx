@@ -24,6 +24,47 @@ const ALL_STAGES: { id: string; label: string }[] = [
   { id: "closed", label: "Closed" },
 ];
 
+function renderSourceBadge(source: LeadDetail["source"]) {
+  switch (source) {
+    case "google_maps":
+      return (
+        <span className="font-mono text-[10px] text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-md bg-sky-500/10 whitespace-nowrap">
+          Google Maps
+        </span>
+      );
+    case "contra":
+      return (
+        <span className="font-mono text-[10px] text-purple-400 border border-purple-500/30 px-2 py-0.5 rounded-md bg-purple-500/10 whitespace-nowrap">
+          Contra
+        </span>
+      );
+    case "yellow_pages":
+      return (
+        <span className="font-mono text-[10px] text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-md bg-amber-500/10 whitespace-nowrap">
+          YellowPages
+        </span>
+      );
+    case "apollo":
+      return (
+        <span className="font-mono text-[10px] text-accent border border-accent/30 px-2 py-0.5 rounded-md bg-accent/10 whitespace-nowrap">
+          Apollo.io
+        </span>
+      );
+    case "hunter":
+      return (
+        <span className="font-mono text-[10px] text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md bg-emerald-500/10 whitespace-nowrap">
+          Hunter.io
+        </span>
+      );
+    default:
+      return (
+        <span className="font-mono text-[10px] text-text-secondary border border-border px-2 py-0.5 rounded-md bg-surface-raised uppercase whitespace-nowrap">
+          {source}
+        </span>
+      );
+  }
+}
+
 export function LeadTable({ initialLeads }: LeadTableProps) {
   const [leads, setLeads] = useState<LeadDetail[]>(initialLeads);
   const [selectedStage, setSelectedStage] = useState<string>("all");
@@ -183,11 +224,14 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                             <div className="font-medium text-text-primary group-hover/link:text-accent transition-colors">
                               {lead.company_name}
                             </div>
-                            {lead.company_domain && (
-                              <div className="text-[11px] font-mono text-text-muted mt-0.5">
-                                {lead.company_domain}
-                              </div>
-                            )}
+                            <div className="flex items-center gap-2 text-[11px] font-mono text-text-muted mt-0.5">
+                              {lead.company_domain && <span>{lead.company_domain}</span>}
+                              {lead.location && (
+                                <span className="text-[10px] text-text-secondary truncate max-w-[140px]" title={lead.location}>
+                                  · {lead.location}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </Link>
                       </td>
@@ -195,11 +239,10 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                       {/* Contact */}
                       <td className="py-3.5 px-5">
                         <div className="text-text-primary font-medium">{lead.contact_name}</div>
-                        {lead.contact_title && (
-                          <div className="text-[11px] text-text-muted truncate max-w-[190px] mt-0.5">
-                            {lead.contact_title}
-                          </div>
-                        )}
+                        <div className="text-[11px] text-text-muted truncate max-w-[190px] mt-0.5 flex items-center gap-1.5">
+                          {lead.contact_title && <span>{lead.contact_title}</span>}
+                          {lead.phone && !lead.contact_title && <span className="font-mono text-[10px] text-accent">{lead.phone}</span>}
+                        </div>
                       </td>
 
                       {/* Deliverability Email */}
@@ -219,6 +262,11 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                             )}
                             <span className="text-text-secondary truncate max-w-[170px]" title={lead.email}>{lead.email}</span>
                           </div>
+                        ) : lead.phone ? (
+                          <div className="flex items-center gap-1.5 font-mono text-[11px] text-accent">
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-accent/10 border border-accent/25">Phone</span>
+                            <span>{lead.phone}</span>
+                          </div>
                         ) : (
                           <span className="text-text-muted font-mono text-[11px] italic">
                             Pending Hunter check
@@ -228,9 +276,7 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
 
                       {/* Source */}
                       <td className="py-3.5 px-5">
-                        <span className="font-mono text-[10px] text-text-secondary border border-border px-2 py-0.5 rounded bg-surface-raised uppercase">
-                          {lead.source}
-                        </span>
+                        {renderSourceBadge(lead.source)}
                       </td>
 
                       {/* Stage Selector */}

@@ -1,5 +1,9 @@
 import { searchApolloLeads, ApolloSearchParams } from "./apollo";
+import { searchGoogleMapsPlaces } from "./google-maps";
+import { searchContraClients } from "./contra";
+import { searchYellowPages } from "./yellow-pages";
 import { findAndVerifyEmail } from "./hunter";
+import { LeadSource } from "@/lib/types";
 import { 
   getLeads, 
   getLeadById, 
@@ -9,12 +13,68 @@ import {
   LeadDetail 
 } from "@/lib/db/leads";
 
-export async function sourceLeadsFromICP(
-  params: ApolloSearchParams = {}
+export interface UnifiedSourcingParams extends ApolloSearchParams {
+  source?: LeadSource;
+  query?: string;
+  location?: string;
+}
+
+export async function sourceLeads(
+  params: UnifiedSourcingParams = {}
 ): Promise<{ created: LeadDetail[]; count: number; error?: string }> {
-  const { candidates, error } = await searchApolloLeads(params);
-  if (error) {
-    return { created: [], count: 0, error };
+  const source = params.source || "apollo";
+  const limit = params.limit || 5;
+
+  let candidates: {
+    company_name: string;
+    contact_name: string;
+    contact_title: string;
+    company_domain: string;
+    company_summary: string;
+    phone?: string;
+    location?: string;
+    source: LeadSource;
+  }[] = [];
+  let fetchError: string | undefined;
+
+  if (source === "google_maps") {
+    const res = await searchGoogleMapsPlaces({
+      query: params.query || "Commercial Agency",
+      location: params.location || "Austin, TX",
+      limit,
+    });
+    candidates = res.candidates;
+    fetchError = res.error;
+  } else if (source === "contra") {
+    const res = await searchContraClients({
+      query: params.query,
+      limit,
+    });
+    candidates = res.candidates;
+    fetchError = res.error;
+  } else if (source === "yellow_pages") {
+    const res = await searchYellowPages({
+      category: params.query || "Commercial Services",
+      location: params.location || "Chicago, IL",
+      limit,
+    });
+    candidates = res.candidates;
+    fetchError = res.error;
+  } else {
+    // Default: Apollo
+    const res = await searchApolloLeads({
+      industry: params.industry,
+      targetRoles: params.targetRoles,
+      minEmployees: params.minEmployees,
+      maxEmployees: params.maxEmployees,
+      limit,
+    });
+    candidates = res.candidates;
+    fetchError = res.error;
+  }
+
+  if (fetchError) {
+    return { created: [], count: 0, error: fetchError };
   }
 
   const existingLeads = await getLeads();
@@ -30,7 +90,7 @@ export async function sourceLeadsFromICP(
   const createdLeads: LeadDetail[] = [];
 
   for (const c of candidates) {
-    // Prevent duplicate entries
+    // Prevent duplicate entries across ledger
     const domainLower = c.company_domain.toLowerCase();
     const companyLower = c.company_name.toLowerCase();
 
@@ -45,9 +105,11 @@ export async function sourceLeadsFromICP(
       contact_title: c.contact_title,
       email: null,
       email_verified: false,
-      source: "apollo",
+      source: c.source || source,
       company_domain: c.company_domain,
       company_summary: c.company_summary,
+      phone: c.phone || null,
+      location: c.location || null,
       stage: "sourced",
     });
 
@@ -58,6 +120,9 @@ export async function sourceLeadsFromICP(
 
   return { created: createdLeads, count: createdLeads.length };
 }
+
+// Backwards-compatible alias for existing callers
+export const sourceLeadsFromICP = sourceLeads;
 
 export async function enrichLeadRecord(
   leadId: string

@@ -7,6 +7,9 @@ export async function POST(request: Request) {
     const limit = typeof body.limit === "number" ? body.limit : 5;
 
     const result = await sourceLeadsFromICP({
+      source: body.source,
+      query: body.query,
+      location: body.location,
       limit,
       industry: body.industry,
       targetRoles: body.targetRoles,
@@ -21,6 +24,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
+      source: body.source || "apollo",
       count: result.count,
       leads: result.created,
     });

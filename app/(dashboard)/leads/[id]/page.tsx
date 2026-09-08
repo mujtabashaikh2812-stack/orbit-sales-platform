@@ -368,6 +368,27 @@ export default function LeadDetailPage({
               </div>
             </div>
 
+            {(lead.phone || lead.location) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                {lead.phone && (
+                  <div className="p-3.5 rounded-xl bg-surface-raised border border-border/60 space-y-1">
+                    <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Direct Phone / Hotline</span>
+                    <div className="text-accent font-mono pt-0.5 font-medium">
+                      {lead.phone}
+                    </div>
+                  </div>
+                )}
+                {lead.location && (
+                  <div className="p-3.5 rounded-xl bg-surface-raised border border-border/60 space-y-1">
+                    <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Registered Location</span>
+                    <div className="text-text-primary font-medium pt-0.5 truncate">
+                      {lead.location}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="space-y-2 text-xs pt-1">
               <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Executive Intelligence Summary</span>
               <p className="text-text-primary leading-relaxed bg-ink/50 border border-border/70 p-4 rounded-xl shadow-inner text-xs">

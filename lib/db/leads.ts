@@ -355,6 +355,8 @@ export async function createLead(
         source: input.source,
         company_domain: input.company_domain,
         company_summary: input.company_summary,
+        phone: input.phone,
+        location: input.location,
         stage: input.stage,
       })
       .select()

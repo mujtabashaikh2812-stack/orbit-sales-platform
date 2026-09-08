@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Lead, LeadStage } from "@/lib/types";
-import { X } from "lucide-react";
+import { Lead, LeadStage, LeadSource } from "@/lib/types";
+import { X, Sparkles } from "lucide-react";
 
 interface LeadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (lead: Omit<Lead, "id" | "created_at" | "updated_at" | "stage_updated_at">) => void;
+  onSave: (
+    lead: Omit<Lead, "id" | "created_at" | "updated_at" | "stage_updated_at">,
+    options?: { autoContact?: boolean }
+  ) => void;
   initialData?: Lead | null;
 }
 
@@ -34,31 +37,37 @@ export function LeadModal({
   const [contactTitle, setContactTitle] = useState(initialData?.contact_title || "");
   const [email, setEmail] = useState(initialData?.email || "");
   const [emailVerified, setEmailVerified] = useState(initialData?.email_verified ?? false);
-  const [source, setSource] = useState<"apollo" | "hunter" | "manual">(
-    initialData?.source || "manual"
-  );
+  const [phone, setPhone] = useState(initialData?.phone || "");
+  const [location, setLocation] = useState(initialData?.location || "");
+  const [source, setSource] = useState<LeadSource>(initialData?.source || "manual");
   const [companyDomain, setCompanyDomain] = useState(initialData?.company_domain || "");
   const [companySummary, setCompanySummary] = useState(
     initialData?.company_summary || ""
   );
   const [stage, setStage] = useState<LeadStage>(initialData?.stage || "sourced");
+  const [autoContact, setAutoContact] = useState(false);
 
   if (!isOpen) return null;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSave({
-      user_id: initialData?.user_id || "00000000-0000-0000-0000-000000000001",
-      company_name: companyName.trim(),
-      contact_name: contactName.trim(),
-      contact_title: contactTitle.trim() || null,
-      email: email.trim() || null,
-      email_verified: emailVerified,
-      source,
-      company_domain: companyDomain.trim() || null,
-      company_summary: companySummary.trim() || null,
-      stage,
-    });
+    onSave(
+      {
+        user_id: initialData?.user_id || "00000000-0000-0000-0000-000000000001",
+        company_name: companyName.trim(),
+        contact_name: contactName.trim(),
+        contact_title: contactTitle.trim() || null,
+        email: email.trim() || null,
+        email_verified: emailVerified,
+        phone: phone.trim() || null,
+        location: location.trim() || null,
+        source,
+        company_domain: companyDomain.trim() || null,
+        company_summary: companySummary.trim() || null,
+        stage: autoContact && email.trim() ? "contacted" : stage,
+      },
+      { autoContact }
+    );
     onClose();
   }
 
@@ -163,6 +172,30 @@ export function LeadModal({
             </div>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Phone Number (Optional)</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="(512) 555-0199"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Location / City (Optional)</label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Austin, TX / London"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center pt-1">
             <div className="space-y-1.5">
               <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Lead Source</label>
@@ -171,10 +204,13 @@ export function LeadModal({
                 onChange={(e) => setSource(e.target.value as any)}
                 className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner cursor-pointer"
               >
-                <option value="apollo">Apollo</option>
-                <option value="hunter">Hunter</option>
-                <option value="csv_import">CSV Import</option>
                 <option value="manual">Manual Entry</option>
+                <option value="google_maps">Google Maps Places</option>
+                <option value="contra">Contra Project</option>
+                <option value="yellow_pages">YellowPages Directory</option>
+                <option value="apollo">Apollo.io</option>
+                <option value="hunter">Hunter.io</option>
+                <option value="csv_import">CSV Import</option>
               </select>
             </div>
 
@@ -203,6 +239,26 @@ export function LeadModal({
               placeholder="What does this company do? What specific problem can we solve for them?"
               className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none shadow-inner leading-relaxed transition-colors"
             />
+          </div>
+
+          {/* Auto-Outreach Dispatch Toggle */}
+          <div className="p-3.5 rounded-xl border border-accent/35 bg-accent/5 space-y-1.5 shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                id="auto_contact"
+                checked={autoContact}
+                onChange={(e) => setAutoContact(e.target.checked)}
+                className="rounded border-border bg-ink text-accent focus:ring-0 cursor-pointer"
+              />
+              <label htmlFor="auto_contact" className="text-xs font-medium text-text-primary cursor-pointer flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-accent" />
+                <span>Auto-draft & send cold outreach immediately (Claude AI + Gmail)</span>
+              </label>
+            </div>
+            <p className="text-[11px] text-text-muted pl-6 leading-relaxed">
+              Generates a personalized pitch based on company context and dispatches immediately. Protected by <span className="font-mono text-accent">DRY_RUN_MODE=true</span> safety shield.
+            </p>
           </div>
 
           {/* Actions */}
