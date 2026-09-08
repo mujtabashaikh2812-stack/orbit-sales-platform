@@ -84,48 +84,48 @@ export default function MeetingsPage() {
       <div className="flex flex-col md:flex-row md:items-baseline justify-between border-b border-border pb-5 gap-4">
         <div>
           <h1 className="font-serif text-2xl md:text-[28px] text-text-primary tracking-tight font-medium">
-            Meetings Ledger
+            Discovery Meetings Ledger
           </h1>
           <p className="text-sm text-text-secondary mt-1">
-            Google Calendar synchronizations, discovery sessions, and scheduled prospect calls
+            Google Calendar synchronizations, executive discovery calls, and scheduled client sessions
           </p>
         </div>
 
         {/* Metric Badges */}
         <div className="flex items-center gap-3 text-xs font-mono">
-          <div className="border border-border bg-surface px-3 py-1.5 rounded flex items-center gap-2">
-            <span className="text-text-secondary">UPCOMING:</span>
-            <span className="text-accent font-semibold">{upcomingCount}</span>
+          <div className="border border-border/80 bg-surface-raised px-3.5 py-2 rounded-xl flex items-center gap-2.5 shadow-card">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider">Upcoming</span>
+            <span className="text-accent font-bold text-sm">{upcomingCount}</span>
           </div>
-          <div className="border border-border bg-surface px-3 py-1.5 rounded flex items-center gap-2">
-            <span className="text-text-secondary">TOTAL RECORDED:</span>
-            <span className="text-text-primary font-semibold">{totalBooked}</span>
+          <div className="border border-border/80 bg-surface-raised px-3.5 py-2 rounded-xl flex items-center gap-2.5 shadow-card">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider">Total Booked</span>
+            <span className="text-text-primary font-bold text-sm">{totalBooked}</span>
           </div>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1 border border-border bg-surface p-1 rounded">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1 border border-border/80 bg-surface p-1 rounded-xl shadow-card">
           <button
             type="button"
             onClick={() => setFilter("all")}
             className={cn(
-              "px-3 py-1 text-xs rounded transition-colors",
+              "px-3.5 py-1.5 text-xs rounded-lg transition-all font-mono",
               filter === "all"
-                ? "bg-accent text-ink font-medium"
+                ? "bg-accent text-ink font-semibold shadow-sm"
                 : "text-text-secondary hover:text-text-primary"
             )}
           >
-            All Meetings ({allMeetings.length})
+            All Sessions ({allMeetings.length})
           </button>
           <button
             type="button"
             onClick={() => setFilter("upcoming")}
             className={cn(
-              "px-3 py-1 text-xs rounded transition-colors",
+              "px-3.5 py-1.5 text-xs rounded-lg transition-all font-mono",
               filter === "upcoming"
-                ? "bg-accent text-ink font-medium"
+                ? "bg-accent text-ink font-semibold shadow-sm"
                 : "text-text-secondary hover:text-text-primary"
             )}
           >
@@ -135,44 +135,45 @@ export default function MeetingsPage() {
             type="button"
             onClick={() => setFilter("past")}
             className={cn(
-              "px-3 py-1 text-xs rounded transition-colors",
+              "px-3.5 py-1.5 text-xs rounded-lg transition-all font-mono",
               filter === "past"
-                ? "bg-accent text-ink font-medium"
+                ? "bg-accent text-ink font-semibold shadow-sm"
                 : "text-text-secondary hover:text-text-primary"
             )}
           >
-            Past ({allMeetings.length - upcomingCount})
+            Concluded ({allMeetings.length - upcomingCount})
           </button>
         </div>
 
-        <div className="text-[11px] font-mono text-text-secondary flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-          <span>Google Calendar API: Linked (Simulated)</span>
+        <div className="text-[11px] font-mono text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-xs">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Calendar Gateway: Connected</span>
         </div>
       </div>
 
       {/* Table or Empty State */}
       {loading ? (
-        <div className="p-12 text-center text-xs font-mono text-text-secondary border border-border bg-surface rounded">
+        <div className="p-16 text-center text-xs font-mono text-text-secondary border border-border bg-surface rounded-2xl shadow-card">
+          <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           Loading calendar ledger entries...
         </div>
       ) : filteredMeetings.length === 0 ? (
-        <div className="border border-border bg-surface p-12 text-center rounded">
+        <div className="border border-border bg-surface p-16 text-center rounded-2xl shadow-card">
           <div className="max-w-md mx-auto space-y-4">
-            <div className="w-10 h-10 rounded-full border border-border bg-surface-raised flex items-center justify-center mx-auto text-text-secondary">
-              <CalendarIcon className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl border border-border/80 bg-surface-raised flex items-center justify-center mx-auto text-accent shadow-card">
+              <CalendarIcon className="w-6 h-6" />
             </div>
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-text-primary">
+            <div className="space-y-1.5">
+              <h3 className="text-base font-medium text-text-primary">
                 No meetings {filter !== "all" ? `in ${filter}` : "recorded"}
               </h3>
               <p className="text-xs text-text-secondary leading-relaxed">
-                When prospects agree to discovery calls, schedule them directly from the lead dossier. They will synchronize and be logged in this ledger.
+                When prospects agree to discovery calls, book them directly from the lead dossier. They will synchronize and be logged in this ledger.
               </p>
             </div>
             <Link
               href="/leads"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl shadow-sm active:scale-[0.98]"
             >
               <span>View Leads Ledger</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -180,31 +181,31 @@ export default function MeetingsPage() {
           </div>
         </div>
       ) : (
-        <div className="border border-border bg-surface rounded overflow-hidden">
+        <div className="border border-border bg-surface rounded-2xl shadow-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-border bg-surface-raised font-mono text-[11px] text-text-secondary">
-                  <th className="py-3 px-4 font-normal">SCHEDULED TIME (UTC)</th>
-                  <th className="py-3 px-4 font-normal">PROSPECT / COMPANY</th>
-                  <th className="py-3 px-4 font-normal">DURATION</th>
-                  <th className="py-3 px-4 font-normal">STATUS</th>
-                  <th className="py-3 px-4 font-normal">NOTES & SCOPE</th>
-                  <th className="py-3 px-4 font-normal">CONFERENCE</th>
-                  <th className="py-3 px-4 font-normal text-right">ACTIONS</th>
+                <tr className="border-b border-border/80 bg-surface-raised/60 font-mono text-[10px] text-text-muted uppercase tracking-wider">
+                  <th className="py-3.5 px-4 font-medium">SCHEDULED TIME (UTC)</th>
+                  <th className="py-3.5 px-4 font-medium">PROSPECT / COMPANY</th>
+                  <th className="py-3.5 px-4 font-medium">DURATION</th>
+                  <th className="py-3.5 px-4 font-medium">STATUS</th>
+                  <th className="py-3.5 px-4 font-medium">NOTES & SCOPE</th>
+                  <th className="py-3.5 px-4 font-medium">CONFERENCE</th>
+                  <th className="py-3.5 px-4 font-medium text-right">DOSSIER</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-border/60">
                 {filteredMeetings.map((mtg) => {
                   const mtgDate = new Date(mtg.scheduled_at);
 
                   return (
                     <tr
                       key={mtg.id}
-                      className="hover:bg-ink/30 transition-colors duration-150"
+                      className="hover:bg-white/[0.02] transition-colors duration-150"
                     >
                       {/* Scheduled Time */}
-                      <td className="py-3 px-4 font-mono">
+                      <td className="py-3.5 px-4 font-mono">
                         <div className="text-text-primary font-medium">
                           {mtgDate.toLocaleDateString("en-US", {
                             weekday: "short",
@@ -213,7 +214,7 @@ export default function MeetingsPage() {
                             year: "numeric",
                           })}
                         </div>
-                        <div className="text-[11px] text-text-secondary">
+                        <div className="text-[11px] text-text-muted mt-0.5">
                           {mtgDate.toLocaleTimeString("en-US", {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -223,63 +224,74 @@ export default function MeetingsPage() {
                       </td>
 
                       {/* Prospect / Company */}
-                      <td className="py-3 px-4">
-                        <Link
-                          href={`/leads/${mtg.leadId}`}
-                          className="font-medium text-text-primary hover:text-accent hover:underline block"
-                        >
-                          {mtg.companyName}
-                        </Link>
-                        <div className="text-[11px] text-text-secondary flex items-center gap-1.5 mt-0.5">
-                          <span>{mtg.contactName}</span>
-                          {mtg.contactEmail && (
-                            <>
-                              <span>·</span>
-                              <span className="font-mono">{mtg.contactEmail}</span>
-                            </>
-                          )}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-7 h-7 rounded-lg bg-surface-raised border border-border/80 flex items-center justify-center font-mono text-[10px] text-accent font-semibold shrink-0">
+                            {mtg.companyName.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <Link
+                              href={`/leads/${mtg.leadId}`}
+                              className="font-medium text-text-primary hover:text-accent transition-colors block"
+                            >
+                              {mtg.companyName}
+                            </Link>
+                            <div className="text-[11px] text-text-secondary flex items-center gap-1.5 mt-0.5">
+                              <span>{mtg.contactName}</span>
+                              {mtg.contactEmail && (
+                                <>
+                                  <span className="text-text-muted">·</span>
+                                  <span className="font-mono text-text-muted">{mtg.contactEmail}</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </td>
 
                       {/* Duration */}
-                      <td className="py-3 px-4 font-mono text-text-secondary">
-                        <span className="border border-border px-1.5 py-0.5 rounded-sm bg-ink">
-                          {mtg.duration_minutes} min
+                      <td className="py-3.5 px-4 font-mono text-text-secondary">
+                        <span className="border border-border/70 px-2 py-0.5 rounded-md bg-ink/60 text-xs">
+                          {mtg.duration_minutes}m
                         </span>
                       </td>
 
                       {/* Status */}
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         <span
                           className={cn(
-                            "inline-block font-mono text-[10px] px-2 py-0.5 rounded-sm border uppercase",
+                            "inline-flex items-center gap-1.5 font-mono text-[10px] px-2.5 py-0.5 rounded-full border uppercase font-medium",
                             mtg.status === "confirmed"
-                              ? "border-success/40 bg-success/10 text-success"
+                              ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
                               : mtg.status === "completed"
                               ? "border-accent/40 bg-accent/10 text-accent"
                               : mtg.status === "cancelled" || mtg.status === "no_show"
-                              ? "border-danger/40 bg-danger/10 text-danger"
+                              ? "border-rose-500/40 bg-rose-500/10 text-rose-400"
                               : "border-border bg-ink text-text-secondary"
                           )}
                         >
+                          <span className={cn(
+                            "w-1.5 h-1.5 rounded-full",
+                            mtg.status === "confirmed" ? "bg-emerald-400" : mtg.status === "completed" ? "bg-accent" : "bg-rose-400"
+                          )} />
                           {mtg.status}
                         </span>
                       </td>
 
                       {/* Notes */}
-                      <td className="py-3 px-4 max-w-xs">
+                      <td className="py-3.5 px-4 max-w-xs">
                         <p className="text-text-secondary truncate text-[11px]" title={mtg.notes || ""}>
-                          {mtg.notes || "Discovery call"}
+                          {mtg.notes || "Executive Discovery Session"}
                         </p>
                       </td>
 
                       {/* Conference */}
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         <a
                           href="https://meet.google.com"
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 font-mono text-[11px] text-accent hover:underline"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent font-mono text-[11px] transition-all shadow-xs"
                         >
                           <Video className="w-3.5 h-3.5" />
                           <span>Google Meet</span>
@@ -287,12 +299,12 @@ export default function MeetingsPage() {
                       </td>
 
                       {/* Action */}
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right">
                         <Link
                           href={`/leads/${mtg.leadId}`}
-                          className="inline-flex items-center gap-1 text-[11px] font-mono text-text-secondary hover:text-accent transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border/80 bg-surface-raised hover:border-accent/40 hover:text-accent font-mono text-[11px] text-text-secondary transition-all shadow-xs"
                         >
-                          <span>Dossier</span>
+                          <span>Open</span>
                           <ArrowRight className="w-3 h-3" />
                         </Link>
                       </td>

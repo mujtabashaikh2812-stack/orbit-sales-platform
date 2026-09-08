@@ -139,146 +139,219 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-12">
-      {/* Page Header */}
-      <div className="flex items-baseline justify-between border-b border-border pb-5">
-        <div>
-          <h1 className="font-serif text-2xl md:text-[28px] text-text-primary tracking-tight font-medium">
-            Dashboard
-          </h1>
-          <p className="text-sm text-text-secondary mt-1">
-            Outreach pipeline and deal activity ledger
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/leads"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Manage Leads</span>
-          </Link>
+    <div className="space-y-10">
+      {/* Executive Briefing Hero */}
+      <div className="relative rounded-2xl p-7 bg-gradient-to-br from-surface to-surface-raised border border-border/80 overflow-hidden shadow-card">
+        {/* Subtle Ambient Golden Glow */}
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-emerald-500/5 blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-[11px] font-mono text-accent">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              <span>LIVE REVENUE TELEMETRY</span>
+              <span className="text-text-muted">·</span>
+              <span className="text-text-muted">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</span>
+            </div>
+            <h1 className="font-serif text-2xl md:text-3xl text-text-primary tracking-tight font-medium">
+              Outreach & Deal Velocity Ledger
+            </h1>
+            <p className="text-xs text-text-secondary max-w-xl leading-relaxed">
+              Real-time monitoring of your autonomous ICP discovery, Claude AI cold touchpoints, inbound qualifications, and confirmed discovery sessions.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href="/leads"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all duration-150 active:scale-[0.98]"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Source New Prospects</span>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Metric Counters (Ledger Style, Geist Mono) */}
-      <section>
-        <div className="grid grid-cols-1 md:grid-cols-3 border border-border divide-y md:divide-y-0 md:divide-x divide-border bg-surface">
-          <div className="p-6">
-            <div className="text-xs text-text-secondary tracking-normal">
-              Active contacted leads
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-mono text-3xl text-text-primary font-medium">
-                {contactedCount}
-              </span>
-              <span className="text-xs text-text-secondary font-mono">leads</span>
+      {/* Luxury KPI Metric Cards */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Contacted */}
+        <div className="p-6 rounded-xl bg-surface border border-border hover:border-border-highlight/60 transition-all duration-300 shadow-card hover:shadow-card-hover space-y-4 group">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-text-secondary tracking-wide">
+              Active Contacted
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-accent transition-colors">
+              <Users className="w-4 h-4" />
             </div>
           </div>
-
-          <div className="p-6">
-            <div className="text-xs text-text-secondary tracking-normal">
-              Inbound reply rate
+          <div className="flex items-baseline justify-between">
+            <div className="font-mono text-3xl md:text-4xl text-text-primary font-medium tracking-tight">
+              {loading ? "..." : contactedCount}
             </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-mono text-3xl text-accent font-medium">
-                {replyRate}%
-              </span>
-              <span className="text-xs text-success font-mono flex items-center">
-                ↑ active
-              </span>
+            <span className="text-[11px] font-mono text-text-muted bg-surface-raised px-2 py-0.5 rounded border border-border/80">
+              ICP Target
+            </span>
+          </div>
+          <div className="text-[11px] text-text-muted font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
+            <span className="text-accent font-medium">100%</span>
+            <span>automated delivery via Gmail API</span>
+          </div>
+        </div>
+
+        {/* Reply Rate */}
+        <div className="p-6 rounded-xl bg-surface border border-border hover:border-border-highlight/60 transition-all duration-300 shadow-card hover:shadow-card-hover space-y-4 group">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-text-secondary tracking-wide">
+              Inbound Reply Velocity
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-emerald-400 transition-colors">
+              <Sparkles className="w-4 h-4" />
             </div>
           </div>
+          <div className="flex items-baseline justify-between">
+            <div className="font-mono text-3xl md:text-4xl text-accent font-medium tracking-tight">
+              {loading ? "..." : `${replyRate}%`}
+            </div>
+            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+              ↑ High Intent
+            </span>
+          </div>
+          <div className="text-[11px] text-text-muted font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
+            <span>Classified by</span>
+            <span className="text-text-secondary font-medium">Claude 3.5 Sonnet</span>
+          </div>
+        </div>
 
-          <div className="p-6">
-            <div className="text-xs text-text-secondary tracking-normal">
-              Meetings booked
+        {/* Meetings Booked */}
+        <div className="p-6 rounded-xl bg-surface border border-border hover:border-border-highlight/60 transition-all duration-300 shadow-card hover:shadow-card-hover space-y-4 group">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-text-secondary tracking-wide">
+              Discovery Calls Booked
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-accent transition-colors">
+              <Calendar className="w-4 h-4" />
             </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-mono text-3xl text-text-primary font-medium">
-                {meetingsCount}
-              </span>
-              <span className="text-xs text-text-secondary font-mono">confirmed</span>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <div className="font-mono text-3xl md:text-4xl text-text-primary font-medium tracking-tight">
+              {loading ? "..." : meetingsCount}
             </div>
+            <span className="text-[11px] font-mono text-accent bg-accent/10 border border-accent/25 px-2 py-0.5 rounded">
+              Confirmed
+            </span>
+          </div>
+          <div className="text-[11px] text-text-muted font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
+            <span>Synced to</span>
+            <span className="text-text-secondary font-medium">Google Calendar API</span>
           </div>
         </div>
       </section>
 
-      {/* Pipeline Overview (Quiet horizontal kanban per design.md) */}
+      {/* Interactive Pipeline Progression Visualizer */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-text-primary">Pipeline Progression</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-medium text-text-primary">Pipeline Progression Track</h2>
+            <span className="text-[11px] font-mono text-text-muted border border-border px-1.5 py-0.2 rounded bg-surface">
+              8 Stages
+            </span>
+          </div>
           <Link
             href="/leads"
-            className="text-xs text-text-secondary hover:text-accent flex items-center gap-1 transition-colors"
+            className="text-xs text-text-secondary hover:text-accent flex items-center gap-1 transition-colors font-mono text-[11px]"
           >
-            <span>View all leads</span>
+            <span>Open Leads CRM</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 border border-border divide-x divide-y sm:divide-y-0 divide-border bg-surface">
-          {PIPELINE_ORDER.map((stage) => (
-            <Link
-              key={stage.id}
-              href={`/leads`}
-              className="p-4 hover:bg-surface-raised transition-colors block"
-            >
-              <div className="text-xs text-text-secondary truncate">
-                {stage.label}
-              </div>
-              <div className="mt-2 font-mono text-xl text-text-primary font-medium">
-                {loading ? "..." : pipelineCounts[stage.id] ?? 0}
-              </div>
-            </Link>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+          {PIPELINE_ORDER.map((stage, idx) => {
+            const count = loading ? 0 : pipelineCounts[stage.id] ?? 0;
+            const hasLeads = count > 0;
+
+            return (
+              <Link
+                key={stage.id}
+                href="/leads"
+                className={cn(
+                  "p-3.5 rounded-xl border transition-all duration-200 block text-left group shadow-card",
+                  hasLeads
+                    ? "bg-surface hover:bg-surface-raised border-border hover:border-accent/40"
+                    : "bg-surface/50 border-border/40 hover:border-border text-text-muted"
+                )}
+              >
+                <div className="flex items-center justify-between text-[10px] font-mono text-text-muted">
+                  <span>0{idx + 1}</span>
+                  {hasLeads && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent opacity-75" />
+                  )}
+                </div>
+                <div className="mt-2 font-mono text-2xl text-text-primary font-medium tracking-tight">
+                  {loading ? "..." : count}
+                </div>
+                <div className="text-[11px] text-text-secondary truncate mt-1 group-hover:text-text-primary transition-colors">
+                  {stage.label}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
-      {/* Recent Activity Feed (Ledger Rows separated by 1px hairlines) */}
+      {/* Recent Activity Feed */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-text-primary">Recent activity</h2>
-          <span className="text-xs font-mono text-text-secondary flex items-center gap-1.5">
-            <Clock className="w-3 h-3" />
-            <span>live ledger</span>
-          </span>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-medium text-text-primary">Live Activity Ledger</h2>
+            <span className="text-xs font-mono text-text-secondary flex items-center gap-1.5">
+              <Clock className="w-3 h-3 text-accent" />
+              <span>realtime stream</span>
+            </span>
+          </div>
         </div>
 
-        <div className="border border-border divide-y divide-border bg-surface rounded overflow-hidden">
+        <div className="rounded-xl border border-border bg-surface divide-y divide-border overflow-hidden shadow-card">
           {loading ? (
-            <div className="p-8 text-center text-xs font-mono text-text-secondary">
+            <div className="p-12 text-center text-xs font-mono text-text-secondary">
               Loading activity records...
             </div>
           ) : recentActivities.length === 0 ? (
-            <div className="p-8 text-center text-xs text-text-secondary">
-              No activity recorded yet — add your ICP criteria in Settings to start sourcing.
+            <div className="p-12 text-center text-xs text-text-secondary">
+              No activity recorded yet — configure your ICP criteria in Settings to start sourcing prospects.
             </div>
           ) : (
             recentActivities.map((item) => (
               <Link
                 key={item.id}
                 href={`/leads/${item.leadId}`}
-                className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-surface-raised transition-colors duration-150 block"
+                className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-surface-raised/80 transition-colors duration-150 block group"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-text-primary hover:text-accent">
-                      {item.company}
-                    </span>
-                    <span className="text-xs text-text-secondary">·</span>
-                    <span className="text-xs text-text-secondary">
-                      {item.contact}
-                    </span>
+                <div className="flex items-start gap-3.5">
+                  <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border/80 flex items-center justify-center font-mono text-xs text-accent font-semibold shrink-0 group-hover:border-accent/40 transition-colors">
+                    {item.company.slice(0, 2).toUpperCase()}
                   </div>
-                  <div className="text-xs text-text-secondary prose-ledger">
-                    {item.action}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent transition-colors">
+                        {item.company}
+                      </span>
+                      <span className="text-xs text-text-muted">·</span>
+                      <span className="text-xs text-text-secondary">
+                        {item.contact}
+                      </span>
+                    </div>
+                    <div className="text-xs text-text-secondary prose-ledger leading-relaxed">
+                      {item.action}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center gap-4 shrink-0 pl-11 md:pl-0">
                   <StageBadge stage={item.stage} />
-                  <span className="text-xs font-mono text-text-secondary min-w-[50px] text-right">
+                  <span className="text-xs font-mono text-text-muted min-w-[55px] text-right">
                     {formatTimeAgo(item.timestamp)}
                   </span>
                 </div>

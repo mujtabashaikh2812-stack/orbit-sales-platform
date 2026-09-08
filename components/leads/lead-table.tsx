@@ -74,22 +74,22 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
 
   return (
     <div className="space-y-4">
-      {/* Controls Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {/* Search */}
-        <div className="relative w-full sm:w-72">
-          <Search className="w-3.5 h-3.5 text-text-secondary absolute left-3 top-1/2 -translate-y-1/2" />
+      {/* Controls & Filter Bar */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
+        {/* Search Input */}
+        <div className="relative w-full lg:w-80">
+          <Search className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search leads, companies, emails..."
+            placeholder="Search company, contact, or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-surface border border-border pl-9 pr-3 py-1.5 text-xs text-text-primary rounded focus:outline-none focus:border-accent"
+            className="w-full bg-surface border border-border pl-10 pr-4 py-2 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/40 shadow-sm transition-all placeholder:text-text-muted"
           />
         </div>
 
-        {/* Stage Filter Tabs (horizontal scrollable on mobile) */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+        {/* Stage Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
           {ALL_STAGES.map((s) => {
             const count =
               s.id === "all"
@@ -105,14 +105,17 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                 key={s.id}
                 onClick={() => setSelectedStage(s.id)}
                 className={cn(
-                  "px-2.5 py-1 text-xs rounded transition-colors whitespace-nowrap flex items-center gap-1.5",
+                  "px-3 py-1.5 text-xs rounded-lg transition-all duration-150 whitespace-nowrap flex items-center gap-2 font-mono text-[11px]",
                   isSelected
-                    ? "bg-surface-raised text-text-primary font-medium border border-border"
-                    : "text-text-secondary hover:text-text-primary hover:bg-surface/50"
+                    ? "bg-accent/15 text-accent font-medium border border-accent/35 shadow-sm"
+                    : "bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-raised border border-border/80"
                 )}
               >
                 <span>{s.label}</span>
-                <span className="font-mono text-[10px] text-text-secondary">
+                <span className={cn(
+                  "text-[10px] px-1.5 py-0.2 rounded-full",
+                  isSelected ? "bg-accent/20 text-accent font-bold" : "bg-surface-raised text-text-muted"
+                )}>
                   {count}
                 </span>
               </button>
@@ -121,35 +124,41 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
         </div>
       </div>
 
-      {/* Ledger Table */}
-      <div className="border border-border bg-surface rounded overflow-hidden">
+      {/* Ledger Table Container */}
+      <div className="rounded-2xl border border-border bg-surface overflow-hidden shadow-card">
         {filteredLeads.length === 0 ? (
-          <div className="p-12 text-center text-xs text-text-secondary space-y-2">
+          <div className="p-16 text-center text-xs text-text-secondary space-y-2">
             {leads.length === 0 ? (
-              <p>
-                No leads yet — configure your ICP criteria in Settings or click &quot;Source New Leads&quot; above to begin.
-              </p>
+              <div className="max-w-md mx-auto space-y-2">
+                <div className="text-sm text-text-primary font-medium">No prospects in database</div>
+                <p className="text-text-muted">
+                  Configure your ICP criteria in Settings or click &quot;Source from ICP&quot; above to initiate autonomous prospecting.
+                </p>
+              </div>
             ) : (
-              <p>
-                No leads found matching current search query or stage filter. Try adjusting your query or selecting &quot;All leads&quot;.
-              </p>
+              <div className="space-y-1">
+                <div className="text-text-primary font-medium">No results found</div>
+                <p className="text-text-muted">
+                  No prospects matched &quot;{searchQuery}&quot; in stage &quot;{selectedStage}&quot;. Try clearing filters.
+                </p>
+              </div>
             )}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-border bg-ink/50 text-text-secondary font-medium">
-                  <th className="py-2.5 px-4 font-normal">Company</th>
-                  <th className="py-2.5 px-4 font-normal">Contact</th>
-                  <th className="py-2.5 px-4 font-normal">Email & Status</th>
-                  <th className="py-2.5 px-4 font-normal">Source</th>
-                  <th className="py-2.5 px-4 font-normal">Pipeline Stage</th>
-                  <th className="py-2.5 px-4 font-normal text-right">Updated</th>
-                  <th className="py-2.5 px-4 font-normal w-8"></th>
+                <tr className="border-b border-border bg-surface-raised/80 font-mono text-[10px] text-text-muted uppercase tracking-wider">
+                  <th className="py-3 px-5 font-medium">Prospect / Company</th>
+                  <th className="py-3 px-5 font-medium">Contact Person</th>
+                  <th className="py-3 px-5 font-medium">Deliverability</th>
+                  <th className="py-3 px-5 font-medium">Source</th>
+                  <th className="py-3 px-5 font-medium">Pipeline Stage</th>
+                  <th className="py-3 px-5 font-medium text-right">Last Updated</th>
+                  <th className="py-3 px-5 font-medium text-right w-12">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-border/70">
                 {filteredLeads.map((lead) => {
                   const isHighlighted = recentlyChangedId === lead.id;
 
@@ -157,62 +166,75 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                     <tr
                       key={lead.id}
                       className={cn(
-                        "group hover:bg-surface-raised transition-colors duration-150",
+                        "group hover:bg-surface-raised/70 transition-colors duration-150",
                         isHighlighted && "stage-transition-pulse"
                       )}
                     >
                       {/* Company */}
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-5">
                         <Link
                           href={`/leads/${lead.id}`}
-                          className="font-medium text-text-primary hover:text-accent transition-colors flex items-center gap-1.5"
+                          className="flex items-center gap-3 group/link"
                         >
-                          <span>{lead.company_name}</span>
-                          {lead.company_domain && (
-                            <span className="text-[11px] font-mono text-text-secondary">
-                              ({lead.company_domain})
-                            </span>
-                          )}
+                          <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center font-mono text-xs text-accent font-semibold group-hover/link:border-accent/50 transition-colors shrink-0">
+                            {lead.company_name.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="font-medium text-text-primary group-hover/link:text-accent transition-colors">
+                              {lead.company_name}
+                            </div>
+                            {lead.company_domain && (
+                              <div className="text-[11px] font-mono text-text-muted mt-0.5">
+                                {lead.company_domain}
+                              </div>
+                            )}
+                          </div>
                         </Link>
                       </td>
 
                       {/* Contact */}
-                      <td className="py-3 px-4">
-                        <div className="text-text-primary">{lead.contact_name}</div>
+                      <td className="py-3.5 px-5">
+                        <div className="text-text-primary font-medium">{lead.contact_name}</div>
                         {lead.contact_title && (
-                          <div className="text-[11px] text-text-secondary truncate max-w-[180px]">
+                          <div className="text-[11px] text-text-muted truncate max-w-[190px] mt-0.5">
                             {lead.contact_title}
                           </div>
                         )}
                       </td>
 
-                      {/* Email */}
-                      <td className="py-3 px-4">
+                      {/* Deliverability Email */}
+                      <td className="py-3.5 px-5">
                         {lead.email ? (
-                          <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                          <div className="flex items-center gap-2 font-mono text-[11px]">
                             {lead.email_verified ? (
-                              <CheckCircle2 className="w-3 h-3 text-success shrink-0" />
+                              <span className="inline-flex items-center gap-1 text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full text-[10px]">
+                                <CheckCircle2 className="w-3 h-3 shrink-0" />
+                                <span>Verified</span>
+                              </span>
                             ) : (
-                              <AlertCircle className="w-3 h-3 text-warning shrink-0" />
+                              <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-full text-[10px]">
+                                <AlertCircle className="w-3 h-3 shrink-0" />
+                                <span>Unconfirmed</span>
+                              </span>
                             )}
-                            <span className="text-text-primary">{lead.email}</span>
+                            <span className="text-text-secondary truncate max-w-[170px]" title={lead.email}>{lead.email}</span>
                           </div>
                         ) : (
-                          <span className="text-text-secondary font-mono text-[11px]">
-                            Pending enrichment
+                          <span className="text-text-muted font-mono text-[11px] italic">
+                            Pending Hunter check
                           </span>
                         )}
                       </td>
 
                       {/* Source */}
-                      <td className="py-3 px-4">
-                        <span className="font-mono text-[11px] text-text-secondary border border-border px-1.5 py-0.5 rounded-sm bg-ink">
+                      <td className="py-3.5 px-5">
+                        <span className="font-mono text-[10px] text-text-secondary border border-border px-2 py-0.5 rounded bg-surface-raised uppercase">
                           {lead.source}
                         </span>
                       </td>
 
                       {/* Stage Selector */}
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-5">
                         <div className="flex items-center gap-2">
                           <StageBadge stage={lead.stage} />
                           <select
@@ -221,33 +243,34 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                               handleStageChange(lead.id, e.target.value as LeadStage)
                             }
                             onClick={(e) => e.stopPropagation()}
-                            className="opacity-0 group-hover:opacity-100 bg-ink border border-border text-[10px] font-mono text-text-secondary rounded px-1.5 py-0.5 focus:opacity-100 focus:outline-none focus:border-accent transition-opacity cursor-pointer"
+                            className="opacity-0 group-hover:opacity-100 bg-ink border border-border text-[10px] font-mono text-text-secondary rounded-md px-2 py-0.5 focus:opacity-100 focus:outline-none focus:border-accent transition-all cursor-pointer"
                           >
-                            <option value="sourced">Move to Sourced</option>
-                            <option value="enriched">Move to Enriched</option>
-                            <option value="contacted">Move to Contacted</option>
-                            <option value="replied">Move to Replied</option>
-                            <option value="qualified">Move to Qualified</option>
-                            <option value="meeting_booked">Move to Meeting Booked</option>
-                            <option value="priced">Move to Priced</option>
-                            <option value="won">Mark Won</option>
-                            <option value="lost">Mark Lost</option>
+                            <option value="sourced">Move: Sourced</option>
+                            <option value="enriched">Move: Enriched</option>
+                            <option value="contacted">Move: Contacted</option>
+                            <option value="replied">Move: Replied</option>
+                            <option value="qualified">Move: Qualified</option>
+                            <option value="meeting_booked">Move: Meeting Booked</option>
+                            <option value="priced">Move: Priced</option>
+                            <option value="won">Mark: Won</option>
+                            <option value="lost">Mark: Lost</option>
                           </select>
                         </div>
                       </td>
 
                       {/* Updated Date */}
-                      <td className="py-3 px-4 text-right font-mono text-[11px] text-text-secondary">
+                      <td className="py-3.5 px-5 text-right font-mono text-[11px] text-text-muted">
                         {formatDate(lead.stage_updated_at || lead.updated_at)}
                       </td>
 
-                      {/* Link Action */}
-                      <td className="py-3 px-4 text-right">
+                      {/* Action */}
+                      <td className="py-3.5 px-5 text-right">
                         <Link
                           href={`/leads/${lead.id}`}
-                          className="text-text-secondary hover:text-accent inline-block p-1"
+                          className="inline-flex items-center gap-1 text-[11px] font-mono text-text-muted hover:text-accent p-1 transition-colors"
                           title="Open lead dossier"
                         >
+                          <span>Dossier</span>
                           <ArrowUpRight className="w-3.5 h-3.5" />
                         </Link>
                       </td>

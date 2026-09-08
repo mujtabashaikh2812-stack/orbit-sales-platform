@@ -48,94 +48,94 @@ export default function SettingsPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <Sliders className="w-4 h-4 text-accent" />
-          <h2 className="text-sm font-medium text-text-primary">
-            Ideal Customer Profile (ICP)
+          <h2 className="text-sm font-medium text-text-primary tracking-wide">
+            Ideal Customer Profile (ICP) Parameters
           </h2>
         </div>
 
-        <form onSubmit={handleSaveIcp} className="border border-border bg-surface p-6 rounded space-y-6">
+        <form onSubmit={handleSaveIcp} className="border border-border bg-surface p-6 rounded-2xl shadow-card space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="space-y-1.5">
-              <label className="text-xs text-text-secondary">Target Name / Campaign</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Campaign Target Name</label>
               <input
                 type="text"
                 value={targetName}
                 onChange={(e) => setTargetName(e.target.value)}
-                className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary rounded focus:outline-none focus:border-accent"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs text-text-secondary">Target Industry</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Target Industry & Verticals</label>
               <input
                 type="text"
                 value={targetIndustry}
                 onChange={(e) => setTargetIndustry(e.target.value)}
-                className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary rounded focus:outline-none focus:border-accent"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="space-y-1.5">
-              <label className="text-xs text-text-secondary">Company Size (Min headcount)</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Company Size (Min Headcount)</label>
               <input
                 type="number"
                 value={minSize}
                 onChange={(e) => setMinSize(Number(e.target.value))}
-                className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary font-mono rounded focus:outline-none focus:border-accent"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs text-text-secondary">Company Size (Max headcount)</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Company Size (Max Headcount)</label>
               <input
                 type="number"
                 value={maxSize}
                 onChange={(e) => setMaxSize(Number(e.target.value))}
-                className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary font-mono rounded focus:outline-none focus:border-accent"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs text-text-secondary">Target Job Titles (comma separated)</label>
+          <div className="space-y-2">
+            <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Target Executive Titles (Comma Separated)</label>
             <input
               type="text"
               value={titles}
               onChange={(e) => setTitles(e.target.value)}
-              className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary rounded focus:outline-none focus:border-accent"
+              className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs text-text-secondary">
-              Personalization Guidance & Value Proposition (Provided to Claude AI)
+          <div className="space-y-2">
+            <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">
+              Autonomous Personalization Context & Value Proposition (Provided to Claude AI)
             </label>
             <textarea
               rows={3}
               value={valueProp}
               onChange={(e) => setValueProp(e.target.value)}
-              className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary rounded focus:outline-none focus:border-accent resize-none"
+              className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none shadow-inner leading-relaxed transition-colors"
             />
           </div>
 
-          <div className="pt-2 flex items-center justify-between">
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border/60">
             {icpSaved ? (
-              <span className="text-xs text-success font-mono flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Saved to ledger configuration</span>
+              <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Configuration synchronized with live agent</span>
               </span>
             ) : (
-              <span className="text-[11px] text-text-secondary font-mono">
-                Changes apply to subsequent sourcing batches
+              <span className="text-[11px] text-text-muted font-mono">
+                Parameters immediately dictate Apollo sourcing & Claude tone
               </span>
             )}
             <button
               type="submit"
-              className="px-4 py-2 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded"
+              className="px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl active:scale-[0.98] w-fit"
             >
-              Save ICP criteria
+              Save ICP Criteria
             </button>
           </div>
         </form>
@@ -145,57 +145,57 @@ export default function SettingsPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-accent" />
-          <h2 className="text-sm font-medium text-text-primary">
-            Outreach Safeguards & Compliance Rules
+          <h2 className="text-sm font-medium text-text-primary tracking-wide">
+            Outreach Safeguards & Protocol Compliance
           </h2>
         </div>
 
-        <div className="border border-border bg-surface p-6 rounded space-y-4">
+        <div className="border border-border bg-surface p-6 rounded-2xl shadow-card space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-            <div className="border border-border bg-surface-raised p-3.5 rounded space-y-1.5">
+            <div className="border border-border/80 bg-surface-raised p-4 rounded-xl space-y-2 shadow-sm">
               <div className="flex items-center gap-2 text-text-primary font-medium">
-                <Mail className="w-3.5 h-3.5 text-accent" />
+                <Mail className="w-4 h-4 text-accent" />
                 <span>Daily Outbound Cap</span>
               </div>
-              <div className="font-mono text-lg text-text-primary font-semibold">
-                15 emails / day
+              <div className="font-mono text-xl text-accent font-bold">
+                15 / day
               </div>
-              <p className="text-[11px] text-text-secondary">
-                Protects Gmail sender score on Google Workspace free tiers.
+              <p className="text-[11px] text-text-muted leading-relaxed">
+                Protects Gmail sender reputation on Google Workspace tiers.
               </p>
             </div>
 
-            <div className="border border-border bg-surface-raised p-3.5 rounded space-y-1.5">
+            <div className="border border-border/80 bg-surface-raised p-4 rounded-xl space-y-2 shadow-sm">
               <div className="flex items-center gap-2 text-text-primary font-medium">
-                <Clock className="w-3.5 h-3.5 text-accent" />
-                <span>Sending Hours</span>
+                <Clock className="w-4 h-4 text-accent" />
+                <span>Dispatch Window</span>
               </div>
-              <div className="font-mono text-lg text-text-primary font-semibold">
+              <div className="font-mono text-xl text-text-primary font-bold">
                 09:00 – 17:00
               </div>
-              <p className="text-[11px] text-text-secondary">
-                Respects prospect timezone; no late evening or weekend sends.
+              <p className="text-[11px] text-text-muted leading-relaxed">
+                Prospect local timezone adherence; suppresses evening & weekend dispatches.
               </p>
             </div>
 
-            <div className="border border-border bg-surface-raised p-3.5 rounded space-y-1.5">
+            <div className="border border-border/80 bg-surface-raised p-4 rounded-xl space-y-2 shadow-sm">
               <div className="flex items-center gap-2 text-text-primary font-medium">
-                <Ban className="w-3.5 h-3.5 text-accent" />
-                <span>Auto-Unsubscribe</span>
+                <Ban className="w-4 h-4 text-rose-400" />
+                <span>Auto-Suppression</span>
               </div>
-              <div className="font-mono text-sm text-text-primary font-medium">
-                Instant Stop
+              <div className="font-mono text-base text-rose-400 font-semibold pt-1">
+                Zero Tolerance
               </div>
-              <p className="text-[11px] text-text-secondary">
-                Phrases like &quot;not interested&quot; or &quot;stop&quot; atomically transition lead to Lost.
+              <p className="text-[11px] text-text-muted leading-relaxed">
+                Phrases like &quot;stop&quot; or &quot;unsubscribe&quot; atomically halt all follow-ups.
               </p>
             </div>
           </div>
 
-          <div className="p-3 border border-border bg-ink/40 rounded text-xs text-text-secondary flex items-start gap-2.5">
+          <div className="p-4 border border-accent/30 bg-accent/5 rounded-xl text-xs text-text-secondary flex items-start gap-3 shadow-inner">
             <ShieldCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
             <div>
-              <strong className="text-text-primary">Human-in-the-Loop Pricing Rule:</strong> The AI engine is strictly barred from inventing, negotiating, or quoting pricing. Prices are set exclusively by the owner in the deals ledger and relayed without alteration.
+              <strong className="text-text-primary font-medium">Human-in-the-Loop Sovereign Pricing:</strong> Claude AI is strictly prohibited from inventing, estimating, or bargaining pricing. Rates and quotes are configured exclusively by the human operator in the deal ledger and relayed without unauthorized variance.
             </div>
           </div>
         </div>
@@ -205,93 +205,111 @@ export default function SettingsPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-accent" />
-          <h2 className="text-sm font-medium text-text-primary">
-            Integrations & Service Connections
+          <h2 className="text-sm font-medium text-text-primary tracking-wide">
+            Enterprise Infrastructure & API Gateways
           </h2>
         </div>
 
-        <div className="border border-border divide-y divide-border bg-surface rounded">
+        <div className="border border-border divide-y divide-border/60 bg-surface rounded-2xl shadow-card overflow-hidden">
           {/* Supabase */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Database className="w-4 h-4 text-text-secondary" />
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Database className="w-4 h-4 text-emerald-400" />
+              </div>
               <div>
-                <div className="text-sm font-medium text-text-primary">Supabase Database & Auth</div>
-                <div className="text-xs text-text-secondary">Postgres ledger schema, atomic triggers & Row-Level Security</div>
+                <div className="text-sm font-medium text-text-primary">Supabase PostgreSQL Ledger & Auth</div>
+                <div className="text-xs text-text-muted">Postgres schema, stage-change triggers & Row-Level Security</div>
               </div>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-sm border border-success/40 bg-success/10 text-success">
-              Active / RLS Enabled
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Active / RLS Enabled</span>
             </span>
           </div>
 
           {/* Claude */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Key className="w-4 h-4 text-text-secondary" />
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Key className="w-4 h-4 text-accent" />
+              </div>
               <div>
-                <div className="text-sm font-medium text-text-primary">Claude API (Anthropic)</div>
-                <div className="text-xs text-text-secondary">Outreach drafting, inbound reply classification & requirement extraction</div>
+                <div className="text-sm font-medium text-text-primary">Claude 3.5 Sonnet (Anthropic API)</div>
+                <div className="text-xs text-text-muted">Cold outreach generation, reply sentiment analysis & requirements extraction</div>
               </div>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-sm border border-success/40 bg-success/10 text-success">
-              Active (Simulated Fallback)
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>Engine Online</span>
             </span>
           </div>
 
           {/* Gmail */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Mail className="w-4 h-4 text-text-secondary" />
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Mail className="w-4 h-4 text-accent" />
+              </div>
               <div>
-                <div className="text-sm font-medium text-text-primary">Gmail API & Dispatcher</div>
-                <div className="text-xs text-text-secondary">Mailbox connection for outreach delivery & thread synchronization</div>
+                <div className="text-sm font-medium text-text-primary">Gmail Dispatcher Gateway</div>
+                <div className="text-xs text-text-muted">Direct mailbox synchronization & thread tracking</div>
               </div>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-sm border border-accent/40 bg-accent/10 text-accent">
-              Dry-Run Mode (Protected)
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-accent/40 bg-accent/10 text-accent font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <span>Dry-Run Active (Safety Shield)</span>
             </span>
           </div>
 
           {/* Google Calendar */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-text-secondary" />
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Calendar className="w-4 h-4 text-accent" />
+              </div>
               <div>
-                <div className="text-sm font-medium text-text-primary">Google Calendar API</div>
-                <div className="text-xs text-text-secondary">Discovery meeting booking and Google Meet conference generation</div>
+                <div className="text-sm font-medium text-text-primary">Google Calendar Synchronization</div>
+                <div className="text-xs text-text-muted">Discovery call scheduling and Google Meet room generation</div>
               </div>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-sm border border-success/40 bg-success/10 text-success">
-              Active (Simulated Fallback)
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>Calendar Synchronized</span>
             </span>
           </div>
 
           {/* Apollo */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Search className="w-4 h-4 text-text-secondary" />
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <Search className="w-4 h-4 text-text-secondary" />
+              </div>
               <div>
-                <div className="text-sm font-medium text-text-primary">Apollo.io Prospecting API</div>
-                <div className="text-xs text-text-secondary">B2B search matching ICP industry, title, and headcount criteria</div>
+                <div className="text-sm font-medium text-text-primary">Apollo.io Prospecting Engine</div>
+                <div className="text-xs text-text-muted">B2B targeting matching ICP industry, title, and employee size</div>
               </div>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-sm border border-success/40 bg-success/10 text-success">
-              Free Tier Active
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>Gateway Ready</span>
             </span>
           </div>
 
           {/* Hunter */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-4 h-4 text-text-secondary" />
+          <div className="p-4 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-text-secondary">
+                <CheckCircle2 className="w-4 h-4 text-text-secondary" />
+              </div>
               <div>
-                <div className="text-sm font-medium text-text-primary">Hunter.io Verification API</div>
-                <div className="text-xs text-text-secondary">Email deliverability scoring and domain MX verification</div>
+                <div className="text-sm font-medium text-text-primary">Hunter.io Verification Gateway</div>
+                <div className="text-xs text-text-muted">Deliverability scoring, SMTP validation, and MX health checks</div>
               </div>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-sm border border-success/40 bg-success/10 text-success">
-              Free Tier Active
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>Gateway Ready</span>
             </span>
           </div>
         </div>

@@ -47,14 +47,14 @@ export default function LeadsPage() {
           <button
             type="button"
             onClick={loadLeads}
-            className="p-1.5 text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-colors rounded"
+            className="p-2 text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-all rounded-xl shadow-sm active:scale-[0.98]"
             title="Refresh leads"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
           <Link
             href="/settings"
-            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-colors rounded"
+            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-all rounded-xl shadow-sm active:scale-[0.98]"
           >
             <Sliders className="w-3.5 h-3.5" />
             <span>Targeting Settings</span>
@@ -62,9 +62,9 @@ export default function LeadsPage() {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl shadow-sm active:scale-[0.98]"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Add Lead</span>
           </button>
         </div>

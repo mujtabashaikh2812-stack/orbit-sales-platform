@@ -123,18 +123,18 @@ export function OutreachModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-surface-raised border border-border rounded p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="w-full max-w-2xl bg-surface-raised border border-border rounded-2xl p-6 space-y-5 shadow-glow animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border pb-4">
+        <div className="flex items-center justify-between border-b border-border/80 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-accent" />
-              <h2 className="font-serif text-lg text-text-primary font-medium">
+              <h2 className="font-serif text-lg text-text-primary font-medium tracking-tight">
                 AI Cold Outreach Draft
               </h2>
               {model && (
-                <span className="text-[10px] font-mono text-text-secondary border border-border px-1.5 py-0.5 rounded-sm bg-ink">
+                <span className="text-[10px] font-mono text-accent border border-accent/30 px-2 py-0.5 rounded-md bg-accent/10">
                   {model}
                 </span>
               )}
@@ -146,27 +146,27 @@ export function OutreachModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-text-secondary hover:text-text-primary transition-colors"
+            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Safety Banner */}
-        <div className="p-3 border border-warning/30 bg-warning/5 rounded text-xs text-text-secondary flex items-start gap-2.5">
-          <ShieldAlert className="w-4 h-4 text-warning shrink-0 mt-0.5" />
+        <div className="p-3.5 border border-amber-500/30 bg-amber-500/10 rounded-xl text-xs text-amber-200/90 flex items-start gap-3 shadow-inner">
+          <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div>
-            <span className="text-warning font-medium">Dry-Run Protection Active:</span> No real emails will leave your mailbox. Outbound emails are drafted and logged to the CRM messages ledger with zero delivery risk.
+            <span className="text-amber-400 font-semibold">Dry-Run Protection Active:</span> Zero risk of unreviewed external transmissions. Outbound emails are drafted, verified, and logged exclusively to the CRM ledger.
           </div>
         </div>
 
         {/* Status Messages */}
         {statusMessage && (
           <div
-            className={`text-xs px-3 py-2 rounded flex items-center gap-2 border font-mono ${
+            className={`text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 border font-mono ${
               statusMessage.type === "success"
-                ? "border-success/30 bg-success/10 text-success"
-                : "border-danger/30 bg-danger/10 text-danger"
+                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                : "border-rose-500/40 bg-rose-500/10 text-rose-400"
             }`}
           >
             {statusMessage.type === "success" ? (
@@ -180,26 +180,26 @@ export function OutreachModal({
 
         {/* Loading Spinner */}
         {loading ? (
-          <div className="p-12 text-center text-xs font-mono text-text-secondary flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-accent" />
-            <span>Consulting Claude API & synthesizing company context...</span>
+          <div className="p-16 text-center text-xs font-mono text-text-secondary flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-accent" />
+            <span>Consulting Claude API & synthesizing operational context...</span>
           </div>
         ) : (
           <form onSubmit={handleSend} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs text-text-secondary">Subject line</label>
+              <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Subject Line</label>
               <input
                 type="text"
                 required
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary font-mono rounded focus:outline-none focus:border-accent"
+                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
               />
             </div>
 
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-xs text-text-secondary">Email Body</label>
+                <label className="text-[11px] font-mono text-text-secondary uppercase tracking-wider">Executive Copy Body</label>
                 <button
                   type="button"
                   onClick={generateDraft}
@@ -214,30 +214,30 @@ export function OutreachModal({
                 required
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className="w-full bg-ink border border-border p-3 text-xs text-text-primary rounded focus:outline-none focus:border-accent resize-none font-sans leading-relaxed"
+                className="w-full bg-ink/70 border border-border/80 p-3.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none font-sans leading-relaxed shadow-inner transition-colors"
               />
             </div>
 
             {/* Actions */}
-            <div className="pt-3 border-t border-border flex justify-end gap-3">
+            <div className="pt-3 border-t border-border/80 flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs text-text-secondary hover:text-text-primary transition-colors"
+                className="px-4 py-2 text-xs text-text-secondary hover:text-text-primary transition-colors rounded-xl"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={sending || !lead.email}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl disabled:opacity-50 active:scale-[0.98]"
               >
                 {sending ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
                   <Send className="w-3.5 h-3.5" />
                 )}
-                <span>{sending ? "Logging..." : "Send email (Dry Run)"}</span>
+                <span>{sending ? "Logging..." : "Send Email (Dry Run)"}</span>
               </button>
             </div>
           </form>
