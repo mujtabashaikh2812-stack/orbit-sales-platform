@@ -26,6 +26,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { OutreachModal } from "@/components/outreach/outreach-modal";
 
 const PIPELINE_SEQUENCE: LeadStage[] = [
   "sourced",
@@ -52,18 +53,20 @@ export default function LeadDetailPage({
   const [quoteSaved, setQuoteSaved] = useState(false);
   const [enriching, setEnriching] = useState(false);
   const [enrichError, setEnrichError] = useState<string | null>(null);
+  const [isOutreachModalOpen, setIsOutreachModalOpen] = useState(false);
+
+  async function loadLead() {
+    setLoading(true);
+    const data = await getLeadById(resolvedParams.id);
+    setLead(data);
+    if (data?.deal?.quoted_amount) {
+      setQuoteInput(data.deal.quoted_amount);
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      const data = await getLeadById(resolvedParams.id);
-      setLead(data);
-      if (data?.deal?.quoted_amount) {
-        setQuoteInput(data.deal.quoted_amount);
-      }
-      setLoading(false);
-    }
-    load();
+    loadLead();
   }, [resolvedParams.id]);
 
   async function handleStageAdvance(targetStage: LeadStage) {
@@ -194,13 +197,23 @@ export default function LeadDetailPage({
         </div>
 
         {/* Quick Advance Controls */}
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-text-secondary">Pipeline stage:</label>
-          <select
-            value={lead.stage}
-            onChange={(e) => handleStageAdvance(e.target.value as LeadStage)}
-            className="bg-surface border border-border text-xs font-mono text-text-primary px-3 py-1.5 rounded focus:outline-none focus:border-accent"
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setIsOutreachModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded"
           >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Draft Cold Outreach</span>
+          </button>
+
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-text-secondary">Pipeline stage:</label>
+            <select
+              value={lead.stage}
+              onChange={(e) => handleStageAdvance(e.target.value as LeadStage)}
+              className="bg-surface border border-border text-xs font-mono text-text-primary px-3 py-1.5 rounded focus:outline-none focus:border-accent"
+            >
             <option value="sourced">Sourced</option>
             <option value="enriched">Enriched</option>
             <option value="contacted">Contacted</option>
@@ -213,6 +226,7 @@ export default function LeadDetailPage({
           </select>
         </div>
       </div>
+    </div>
 
       {/* Pipeline Stage Progression Stepper */}
       <div className="border border-border bg-surface p-4 rounded">
@@ -472,6 +486,58 @@ export default function LeadDetailPage({
             </div>
           )}
 
+          {/* Email Outreach Thread Card */}
+          <div className="border border-border bg-surface p-5 rounded space-y-3">
+            <div className="flex items-center justify-between border-b border-border pb-2">
+              <div className="flex items-center gap-2 text-sm font-medium text-text-primary">
+                <Send className="w-4 h-4 text-accent" />
+                <span>Outreach Thread</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsOutreachModalOpen(true)}
+                className="text-[10px] font-mono text-accent hover:underline"
+              >
+                + New message
+              </button>
+            </div>
+
+            {lead.messages && lead.messages.length > 0 ? (
+              <div className="space-y-3">
+                {lead.messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={cn(
+                      "p-3 rounded border text-xs space-y-1.5",
+                      msg.direction === "outbound"
+                        ? "border-border bg-surface-raised"
+                        : "border-accent/40 bg-accent/5"
+                    )}
+                  >
+                    <div className="flex items-center justify-between text-[10px] font-mono">
+                      <span className="text-text-secondary">
+                        {msg.direction === "outbound" ? "OUTBOUND (Claude AI)" : "INBOUND REPLY"}
+                      </span>
+                      <span className="text-text-secondary">
+                        {msg.sent_at ? new Date(msg.sent_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                      </span>
+                    </div>
+                    <div className="font-medium text-text-primary text-[11px] truncate">
+                      {msg.subject}
+                    </div>
+                    <div className="text-text-secondary leading-relaxed line-clamp-3 text-[11px]">
+                      {msg.body}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-text-secondary">
+                No emails sent yet. Click &quot;Draft Cold Outreach&quot; above to compose your first message.
+              </div>
+            )}
+          </div>
+
           {/* Immutable Stage Audit Trail */}
           <div className="border border-border bg-surface p-5 rounded space-y-3">
             <div className="flex items-center gap-2 border-b border-border pb-2 text-sm font-medium text-text-primary">
@@ -513,6 +579,14 @@ export default function LeadDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Cold Outreach Modal */}
+      <OutreachModal
+        isOpen={isOutreachModalOpen}
+        onClose={() => setIsOutreachModalOpen(false)}
+        lead={lead}
+        onSent={loadLead}
+      />
     </div>
   );
 }
