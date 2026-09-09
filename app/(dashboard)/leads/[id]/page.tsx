@@ -31,6 +31,7 @@ import { OutreachModal } from "@/components/outreach/outreach-modal";
 import { ReplySimulatorModal } from "@/components/leads/reply-simulator-modal";
 import { MeetingBookingModal } from "@/components/meetings/meeting-booking-modal";
 import { QuoteRelayModal } from "@/components/deals/quote-relay-modal";
+import { CadenceTimelineCard } from "@/components/cadence/cadence-timeline-card";
 
 const PIPELINE_SEQUENCE: LeadStage[] = [
   "sourced",
@@ -306,6 +307,12 @@ export default function LeadDetailPage({
           })}
         </div>
       </div>
+
+      {/* Autonomous Cadence & Auto-Pilot Engine */}
+      <CadenceTimelineCard
+        lead={lead}
+        onLeadUpdated={(updated) => setLead(updated)}
+      />
 
       {/* Two-Column Dossier Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

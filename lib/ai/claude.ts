@@ -3,6 +3,11 @@ import {
   buildColdOutreachUserPrompt, 
   ColdOutreachPromptVariables 
 } from "./prompts/cold-outreach-v1";
+import {
+  CADENCE_FOLLOWUP_SYSTEM_PROMPT,
+  buildFollowUpUserPrompt,
+  FollowUpPromptVariables
+} from "./prompts/followup-v1";
 
 export interface GeneratedEmailDraft {
   subject: string;
@@ -308,4 +313,96 @@ Return ONLY a valid JSON object with:
     model: `${model} (autonomous parser)`,
     simulated: true,
   };
+}
+
+export async function generateCadenceFollowUpEmail(
+  variables: FollowUpPromptVariables
+): Promise<GeneratedEmailDraft> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const model = "claude-3-5-sonnet-20241022";
+
+  if (apiKey && !apiKey.includes("placeholder")) {
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 500,
+          temperature: 0.3,
+          system: CADENCE_FOLLOWUP_SYSTEM_PROMPT,
+          messages: [
+            {
+              role: "user",
+              content: buildFollowUpUserPrompt(variables),
+            },
+          ],
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const rawText = data.content?.[0]?.text || "";
+        const cleanedJson = rawText
+          .replace(/^```json\s*/, "")
+          .replace(/```\s*$/, "")
+          .trim();
+        const parsed = JSON.parse(cleanedJson);
+        return {
+          subject: parsed.subject,
+          body: parsed.body,
+          model,
+          simulated: false,
+        };
+      }
+    } catch {
+      // fallback to simulation
+    }
+  }
+
+  const firstName = variables.contactName.split(" ")[0] || variables.contactName;
+  const company = variables.companyName;
+
+  if (variables.step === 2) {
+    const subject = `Re: ${variables.previousSubject || `Quick question regarding ${company}`}`;
+    const body = [
+      `Hi ${firstName},`,
+      `Circling back briefly on my previous note. I know you're busy running things at ${company}.`,
+      `We specialize in building bespoke web applications and API pipelines to help teams scale engineering velocity without agency overhead.`,
+      `Would you have 10-15 minutes Thursday or Friday for a quick diagnostic chat?`,
+      `Best,\n${variables.senderName}`,
+      `If this is not relevant to your current priorities, reply 'unsubscribe' and I will not contact you again.`
+    ].join("\n\n");
+
+    return {
+      subject,
+      body,
+      model: `${model} (cadence engine simulation)`,
+      simulated: true,
+    };
+  } else {
+    // Step 3: Breakup email
+    const subject = `Closing the loop: ${company}`;
+    const bookingLine = variables.bookingUrl
+      ? `\nIf timing is ever right in the future, feel free to pick a time directly: ${variables.bookingUrl}`
+      : "";
+    const body = [
+      `Hi ${firstName},`,
+      `I haven't heard back, so I assume custom software integrations aren't a priority for ${company} right now. I completely understand and won't clutter your inbox further.${bookingLine}`,
+      `Wishing you and the team all the best!`,
+      `Best,\n${variables.senderName}`,
+      `If this is not relevant to your current priorities, reply 'unsubscribe' and I will not contact you again.`
+    ].join("\n\n");
+
+    return {
+      subject,
+      body,
+      model: `${model} (cadence engine simulation)`,
+      simulated: true,
+    };
+  }
 }

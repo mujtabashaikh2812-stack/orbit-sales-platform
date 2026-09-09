@@ -2,10 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LeadDetail, updateLeadStage } from "@/lib/db/leads";
+import { LeadDetail, updateLeadStage, getLeads } from "@/lib/db/leads";
 import { LeadStage } from "@/lib/types";
 import { StageBadge } from "./stage-badge";
-import { Search, CheckCircle2, AlertCircle, ArrowUpRight } from "lucide-react";
+import { 
+  Search, 
+  CheckCircle2, 
+  AlertCircle, 
+  ArrowUpRight, 
+  Bot, 
+  Sparkles, 
+  RefreshCw, 
+  Play, 
+  Check, 
+  ChevronRight 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LeadTableProps {
@@ -70,6 +81,57 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
   const [selectedStage, setSelectedStage] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [recentlyChangedId, setRecentlyChangedId] = useState<string | null>(null);
+  const [cadenceLoading, setCadenceLoading] = useState(false);
+  const [cadenceStatusMsg, setCadenceStatusMsg] = useState<string | null>(null);
+
+  const activeCadenceCount = leads.filter((l) => l.cadence_status === "active").length;
+
+  async function handleRefresh() {
+    const fresh = await getLeads();
+    setLeads(fresh);
+  }
+
+  async function handleBatchEnroll() {
+    setCadenceLoading(true);
+    setCadenceStatusMsg(null);
+    try {
+      const res = await fetch("/api/cadence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "enroll" }),
+      });
+      const data = await res.json();
+      if (data.enrolledCount > 0) {
+        setCadenceStatusMsg(`Enrolled & dispatched Touch 1 for ${data.enrolledCount} prospect(s)!`);
+        await handleRefresh();
+      } else {
+        setCadenceStatusMsg("No un-enrolled leads with emails found.");
+      }
+    } catch {
+      setCadenceStatusMsg("Failed to batch enroll leads.");
+    } finally {
+      setCadenceLoading(false);
+    }
+  }
+
+  async function handleRunCadenceCycle() {
+    setCadenceLoading(true);
+    setCadenceStatusMsg(null);
+    try {
+      const res = await fetch("/api/cadence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "run_cycle", forceAll: true }),
+      });
+      const data = await res.json();
+      setCadenceStatusMsg(`Cadence cycle executed across ${data.processed || 0} active lead(s).`);
+      await handleRefresh();
+    } catch {
+      setCadenceStatusMsg("Failed to execute cadence cycle.");
+    } finally {
+      setCadenceLoading(false);
+    }
+  }
 
   // Filter leads based on stage and search query
   const filteredLeads = leads.filter((lead) => {
@@ -165,6 +227,72 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
         </div>
       </div>
 
+      {/* Auto-Pilot Cadence Status & Action Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-border/70 bg-surface-raised/40">
+        <div className="flex items-center gap-2.5 text-xs">
+          <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center text-accent shrink-0">
+            <Bot className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 font-medium text-text-primary">
+              <span>Autonomous Cadence</span>
+              {activeCadenceCount > 0 ? (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  {activeCadenceCount} Active
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono text-text-secondary px-2 py-0.5 rounded-full bg-surface border border-border">
+                  0 Active
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-text-secondary">
+              Contacts leads, sends multi-touch follow-ups, and handles replies until booked or rejected.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={cadenceLoading}
+            onClick={handleBatchEnroll}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent/90 text-surface-dark font-medium text-xs shadow-sm transition disabled:opacity-50"
+          >
+            {cadenceLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            <span>Enroll All Enriched</span>
+          </button>
+
+          <button
+            type="button"
+            disabled={cadenceLoading || activeCadenceCount === 0}
+            onClick={handleRunCadenceCycle}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-raised border border-border hover:border-accent/40 text-text-primary text-xs font-medium transition disabled:opacity-50"
+          >
+            {cadenceLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 text-accent" />}
+            <span>Run Cadence Cycle</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Cadence Status Message */}
+      {cadenceStatusMsg && (
+        <div className="text-xs px-3.5 py-2.5 rounded-xl border border-accent/40 bg-accent/10 text-accent font-mono flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Check className="w-3.5 h-3.5 shrink-0" />
+            <span>{cadenceStatusMsg}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setCadenceStatusMsg(null)}
+            className="text-text-muted hover:text-text-primary text-xs ml-2"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Ledger Table Container */}
       <div className="rounded-2xl border border-border bg-surface overflow-hidden shadow-card">
         {filteredLeads.length === 0 ? (
@@ -194,6 +322,7 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                   <th className="py-3 px-5 font-medium">Contact Person</th>
                   <th className="py-3 px-5 font-medium">Deliverability</th>
                   <th className="py-3 px-5 font-medium">Source</th>
+                  <th className="py-3 px-5 font-medium">Cadence Auto-Pilot</th>
                   <th className="py-3 px-5 font-medium">Pipeline Stage</th>
                   <th className="py-3 px-5 font-medium text-right">Last Updated</th>
                   <th className="py-3 px-5 font-medium text-right w-12">Action</th>
@@ -277,6 +406,28 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                       {/* Source */}
                       <td className="py-3.5 px-5">
                         {renderSourceBadge(lead.source)}
+                      </td>
+
+                      {/* Cadence Status */}
+                      <td className="py-3.5 px-5">
+                        {lead.cadence_status === "active" ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            Touch {lead.cadence_step || 1}/3
+                          </span>
+                        ) : lead.cadence_status === "completed_booked" ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 whitespace-nowrap">
+                            🎉 Booked
+                          </span>
+                        ) : lead.cadence_status === "completed_lost" ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-500/15 text-rose-400 border border-rose-500/40 whitespace-nowrap">
+                            🛑 Lost
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center text-[10px] text-text-muted font-mono whitespace-nowrap">
+                            Idle
+                          </span>
+                        )}
                       </td>
 
                       {/* Stage Selector */}

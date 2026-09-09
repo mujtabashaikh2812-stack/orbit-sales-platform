@@ -33,6 +33,20 @@ export type LeadSource =
   | "manual"
   | "csv_import";
 
+export type CadenceStatus =
+  | "idle"
+  | "active"
+  | "paused"
+  | "completed_booked"
+  | "completed_lost";
+
+export interface CadenceLog {
+  step: number;
+  action: string;
+  timestamp: string;
+  details?: string;
+}
+
 export interface Lead {
   id: string;
   user_id: string;
@@ -51,6 +65,10 @@ export interface Lead {
   stage_updated_at: string;
   created_at: string;
   updated_at: string;
+  cadence_status?: CadenceStatus;
+  cadence_step?: number;
+  cadence_next_run_at?: string | null;
+  cadence_logs?: CadenceLog[];
 }
 
 export interface Conversation {
