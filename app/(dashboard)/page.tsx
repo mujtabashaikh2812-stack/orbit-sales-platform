@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Clock, Plus, Users, Calendar, Sparkles } from "lucide-react";
-import { getLeads, getLeadsSync, LeadDetail } from "@/lib/db/leads";
+import { getLeads, getLeadsSync, INITIAL_LEADS, LeadDetail } from "@/lib/db/leads";
 import { LeadStage } from "@/lib/types";
 import { StageBadge } from "@/components/leads/stage-badge";
 import { cn } from "@/lib/utils";
@@ -30,10 +30,18 @@ interface ActivityItem {
 }
 
 export default function DashboardPage() {
-  const [leads, setLeads] = useState<LeadDetail[]>(() => getLeadsSync());
+  const [leads, setLeads] = useState<LeadDetail[]>(INITIAL_LEADS);
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    // Sync local storage on client mount
+    const cached = getLeadsSync();
+    if (cached && cached.length > 0) {
+      setLeads(cached);
+    }
+
     async function loadData() {
       try {
         const data = await getLeads();
@@ -150,7 +158,7 @@ export default function DashboardPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <span>LIVE REVENUE TELEMETRY</span>
               <span className="text-text-muted">·</span>
-              <span className="text-text-muted">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</span>
+              <span suppressHydrationWarning className="text-text-muted">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</span>
             </div>
             <h1 className="font-serif text-2xl md:text-3xl text-text-primary tracking-tight font-medium">
               Outreach & Deal Velocity Ledger
@@ -341,7 +349,7 @@ export default function DashboardPage() {
                         {item.contact}
                       </span>
                     </div>
-                    <div className="text-xs text-text-secondary prose-ledger leading-relaxed">
+                    <div suppressHydrationWarning className="text-xs text-text-secondary prose-ledger leading-relaxed">
                       {item.action}
                     </div>
                   </div>
@@ -349,7 +357,7 @@ export default function DashboardPage() {
 
                 <div className="flex items-center gap-4 shrink-0 pl-11 md:pl-0">
                   <StageBadge stage={item.stage} />
-                  <span className="text-xs font-mono text-text-muted min-w-[55px] text-right">
+                  <span suppressHydrationWarning className="text-xs font-mono text-text-muted min-w-[55px] text-right">
                     {formatTimeAgo(item.timestamp)}
                   </span>
                 </div>

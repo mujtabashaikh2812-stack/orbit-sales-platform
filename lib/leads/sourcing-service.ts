@@ -3,6 +3,7 @@ import { searchGoogleMapsPlaces } from "./google-maps";
 import { searchContraClients } from "./contra";
 import { searchYellowPages } from "./yellow-pages";
 import { findAndVerifyEmail } from "./hunter";
+import { parseProspectingPrompt, ParsedProspectingIntent } from "@/lib/ai/claude";
 import { LeadSource } from "@/lib/types";
 import { 
   getLeads, 
@@ -123,6 +124,32 @@ export async function sourceLeads(
 
 // Backwards-compatible alias for existing callers
 export const sourceLeadsFromICP = sourceLeads;
+
+export async function sourceLeadsFromPrompt(
+  prompt: string,
+  limit: number = 5
+): Promise<{
+  created: LeadDetail[];
+  count: number;
+  parsed: ParsedProspectingIntent;
+  error?: string;
+}> {
+  const parsed = await parseProspectingPrompt(prompt);
+
+  const sourcingResult = await sourceLeads({
+    source: parsed.channel,
+    query: parsed.query,
+    location: parsed.location,
+    limit,
+  });
+
+  return {
+    created: sourcingResult.created,
+    count: sourcingResult.count,
+    parsed,
+    error: sourcingResult.error,
+  };
+}
 
 export async function enrichLeadRecord(
   leadId: string
