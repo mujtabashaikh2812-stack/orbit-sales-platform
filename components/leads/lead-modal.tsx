@@ -72,8 +72,8 @@ export function LeadModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-surface-raised border border-border rounded-2xl p-6 space-y-6 shadow-glow animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-6 space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border/80 pb-4">
           <h2 className="font-serif text-xl text-text-primary font-medium tracking-tight">
@@ -82,7 +82,7 @@ export function LeadModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface"
+            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface-raised"
           >
             <X className="w-4 h-4" />
           </button>
@@ -99,7 +99,7 @@ export function LeadModal({
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="Acme Corp"
-                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                className="w-full bg-white border border-border px-3.5 py-2 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
               />
             </div>
 
@@ -242,14 +242,14 @@ export function LeadModal({
           </div>
 
           {/* Auto-Outreach Dispatch Toggle */}
-          <div className="p-3.5 rounded-xl border border-accent/35 bg-accent/5 space-y-1.5 shadow-sm">
+          <div className="p-3.5 rounded-xl border border-indigo-200/80 bg-indigo-50/50 space-y-1.5 shadow-sm">
             <div className="flex items-center gap-2.5">
               <input
                 type="checkbox"
                 id="auto_contact"
                 checked={autoContact}
                 onChange={(e) => setAutoContact(e.target.checked)}
-                className="rounded border-border bg-ink text-accent focus:ring-0 cursor-pointer"
+                className="rounded border-border text-accent focus:ring-0 cursor-pointer"
               />
               <label htmlFor="auto_contact" className="text-xs font-medium text-text-primary cursor-pointer flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-accent" />
@@ -257,7 +257,7 @@ export function LeadModal({
               </label>
             </div>
             <p className="text-[11px] text-text-muted pl-6 leading-relaxed">
-              Generates a personalized pitch based on company context and dispatches immediately. Protected by <span className="font-mono text-accent">DRY_RUN_MODE=true</span> safety shield.
+              Generates a personalized pitch based on company context and dispatches immediately. Protected by <span className="font-mono text-accent font-semibold">DRY_RUN_MODE=true</span> safety shield.
             </p>
           </div>
 
@@ -272,7 +272,7 @@ export function LeadModal({
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl active:scale-[0.98]"
+              className="px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl active:scale-[0.98]"
             >
               {initialData ? "Save Changes" : "Enroll Prospect"}
             </button>

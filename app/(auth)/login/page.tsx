@@ -66,64 +66,64 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ink flex flex-col justify-center items-center px-4">
+    <div className="min-h-screen bg-transparent flex flex-col justify-center items-center px-4">
       <div className="w-full max-w-sm space-y-6">
         {/* Brand header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-accent inline-block" />
-            <span className="font-serif text-2xl text-text-primary font-medium tracking-wide">
+          <div className="inline-flex items-center gap-2.5">
+            <span className="w-4 h-4 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-sm inline-block" />
+            <span className="font-serif text-3xl text-text-primary font-semibold tracking-tight">
               Orbit
             </span>
           </div>
           <p className="text-xs text-text-secondary">
-            AI Sales Outreach & CRM Ledger
+            AI Sales Outreach & Autonomous CRM Ledger
           </p>
         </div>
 
         {/* Auth form card */}
-        <div className="border border-border bg-surface p-7 rounded space-y-5">
+        <div className="border border-border/80 bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-card space-y-5">
           {!configured && (
-            <div className="p-3 border border-warning/30 bg-warning/5 rounded text-xs text-text-secondary space-y-1">
-              <div className="text-warning font-medium flex items-center gap-1.5">
+            <div className="p-3 border border-amber-200 bg-amber-50/80 rounded-xl text-xs text-amber-800 space-y-1">
+              <div className="text-amber-700 font-medium flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5" />
                 <span>Development Preview</span>
               </div>
-              <p>
-                Supabase keys not detected in <code className="font-mono text-[11px] text-text-primary">.env.local</code>. Click sign in below to explore the dashboard shell.
+              <p className="text-amber-700/90 text-[11px] leading-relaxed">
+                Supabase keys not detected in <code className="font-mono text-[11px] text-amber-900 font-semibold">.env.local</code>. Click sign in below to explore the dashboard shell.
               </p>
             </div>
           )}
 
           {errorMsg && (
-            <div className="p-3 border border-danger/30 bg-danger/10 rounded text-xs text-danger">
+            <div className="p-3 border border-rose-200 bg-rose-50 rounded-xl text-xs text-rose-700 font-medium">
               {errorMsg}
             </div>
           )}
 
           {message && (
-            <div className="p-3 border border-success/30 bg-success/10 rounded text-xs text-success">
+            <div className="p-3 border border-emerald-200 bg-emerald-50 rounded-xl text-xs text-emerald-700 font-medium">
               {message}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs text-text-secondary">Email address</label>
+              <label className="text-xs font-medium text-text-secondary">Email address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="operator@domain.com"
-                className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary rounded focus:outline-none focus:border-accent"
+                className="w-full bg-white border border-border px-3.5 py-2.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-sm"
               />
             </div>
 
             {mode === "password" && (
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs text-text-secondary">Password</label>
+                  <label className="text-xs font-medium text-text-secondary">Password</label>
                 </div>
                 <input
                   type="password"
@@ -131,7 +131,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-ink border border-border px-3 py-2 text-sm text-text-primary rounded focus:outline-none focus:border-accent"
+                  className="w-full bg-white border border-border px-3.5 py-2.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-sm"
                 />
               </div>
             )}
@@ -139,7 +139,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-medium text-ink bg-accent hover:bg-accent-hover transition-colors rounded disabled:opacity-50"
+              className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 rounded-xl shadow-md shadow-indigo-500/20 transition-all disabled:opacity-50"
             >
               <span>{loading ? "Authenticating..." : mode === "password" ? "Sign in to ledger" : "Send magic link"}</span>
               <ArrowRight className="w-3.5 h-3.5" />

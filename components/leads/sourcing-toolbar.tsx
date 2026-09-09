@@ -265,13 +265,13 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
             type="button"
             disabled={enriching || sourcedCount === 0}
             onClick={handleEnrichAll}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl disabled:opacity-40 shadow-sm active:scale-[0.98]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl disabled:opacity-40 shadow-sm active:scale-[0.98]"
             title="Score mailbox deliverability for pending leads"
           >
             {enriching ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-ink" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
             ) : (
-              <ShieldCheck className="w-3.5 h-3.5 text-ink" />
+              <ShieldCheck className="w-3.5 h-3.5 text-white" />
             )}
             <span>Verify Deliverability ({sourcedCount})</span>
           </button>
@@ -288,14 +288,14 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="e.g. Find commercial logistics companies in Chicago, IL needing custom API workflows..."
-              className="w-full bg-ink/80 border border-border hover:border-accent/40 focus:border-accent pl-10 pr-4 py-2.5 text-xs text-text-primary rounded-xl focus:outline-none shadow-inner transition-colors placeholder:text-text-muted"
+              className="w-full bg-white border border-border hover:border-accent/40 focus:border-accent pl-10 pr-4 py-2.5 text-xs text-text-primary rounded-xl focus:outline-none shadow-sm transition-colors placeholder:text-text-muted"
             />
           </div>
 
           <button
             type="submit"
             disabled={aiSearching || !prompt.trim()}
-            className="px-4 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl disabled:opacity-40 shadow-sm active:scale-[0.98] inline-flex items-center gap-2 shrink-0"
+            className="px-4 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl disabled:opacity-40 shadow-sm active:scale-[0.98] inline-flex items-center gap-2 shrink-0"
           >
             {aiSearching ? (
               <>
@@ -411,7 +411,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={`Search keyword for ${activeManualMeta.label}...`}
-                  className="flex-1 bg-ink/70 border border-border/80 px-3 py-1.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent"
+                  className="flex-1 bg-white border border-border px-3 py-1.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm"
                 />
                 {(selectedChannel === "google_maps" || selectedChannel === "yellow_pages") && (
                   <input
@@ -419,7 +419,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder="Location / City..."
-                    className="w-40 bg-ink/70 border border-border/80 px-3 py-1.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent"
+                    className="w-40 bg-white border border-border px-3 py-1.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm"
                   />
                 )}
               </div>

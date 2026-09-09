@@ -75,8 +75,8 @@ export function MeetingBookingModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-surface-raised border border-border rounded-2xl p-6 space-y-5 shadow-glow animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between border-b border-border/80 pb-4">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-accent" />
@@ -87,13 +87,13 @@ export function MeetingBookingModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface"
+            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface-raised"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="text-xs text-text-secondary bg-surface p-3 rounded-xl border border-border/60">
+        <div className="text-xs text-text-secondary bg-surface-raised p-3 rounded-xl border border-border/60">
           Booking prospect: <strong className="text-text-primary">{lead.contact_name}</strong> ({lead.company_name})
         </div>
 
@@ -126,7 +126,7 @@ export function MeetingBookingModal({
                   required
                   value={dateStr}
                   onChange={(e) => setDateStr(e.target.value)}
-                  className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                  className="w-full bg-white border border-border px-3.5 py-2 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
                 />
               </div>
 
@@ -137,7 +137,7 @@ export function MeetingBookingModal({
                   required
                   value={timeStr}
                   onChange={(e) => setTimeStr(e.target.value)}
-                  className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                  className="w-full bg-white border border-border px-3.5 py-2 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
                 />
               </div>
             </div>
@@ -147,7 +147,7 @@ export function MeetingBookingModal({
               <select
                 value={duration}
                 onChange={(e) => setDuration(Number(e.target.value))}
-                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner cursor-pointer"
+                className="w-full bg-white border border-border px-3.5 py-2.5 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm cursor-pointer"
               >
                 <option value={15}>15 minutes (Quick intro)</option>
                 <option value={30}>30 minutes (Standard discovery)</option>
@@ -162,7 +162,7 @@ export function MeetingBookingModal({
                 rows={3}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-ink/70 border border-border/80 p-3.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none font-sans leading-relaxed shadow-inner transition-colors"
+                className="w-full bg-white border border-border p-3.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none font-sans leading-relaxed shadow-sm transition-colors"
               />
             </div>
 
@@ -177,7 +177,7 @@ export function MeetingBookingModal({
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl disabled:opacity-50 active:scale-[0.98]"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl disabled:opacity-50 active:scale-[0.98]"
               >
                 {loading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />

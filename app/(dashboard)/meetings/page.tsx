@@ -110,7 +110,7 @@ export default function MeetingsPage() {
             className={cn(
               "px-3.5 py-1.5 text-xs rounded-lg transition-all font-mono",
               filter === "all"
-                ? "bg-accent text-ink font-semibold shadow-sm"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-sm"
                 : "text-text-secondary hover:text-text-primary"
             )}
           >
@@ -122,7 +122,7 @@ export default function MeetingsPage() {
             className={cn(
               "px-3.5 py-1.5 text-xs rounded-lg transition-all font-mono",
               filter === "upcoming"
-                ? "bg-accent text-ink font-semibold shadow-sm"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-sm"
                 : "text-text-secondary hover:text-text-primary"
             )}
           >
@@ -134,7 +134,7 @@ export default function MeetingsPage() {
             className={cn(
               "px-3.5 py-1.5 text-xs rounded-lg transition-all font-mono",
               filter === "past"
-                ? "bg-accent text-ink font-semibold shadow-sm"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-sm"
                 : "text-text-secondary hover:text-text-primary"
             )}
           >
@@ -170,7 +170,7 @@ export default function MeetingsPage() {
             </div>
             <Link
               href="/leads"
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl shadow-sm active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl shadow-md active:scale-[0.98]"
             >
               <span>View Leads Ledger</span>
               <ArrowRight className="w-3.5 h-3.5" />

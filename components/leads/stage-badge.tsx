@@ -13,48 +13,48 @@ const STAGE_CONFIG: Record<
 > = {
   sourced: {
     label: "Sourced",
-    style: "text-text-secondary border-border/80 bg-surface-raised/60",
+    style: "text-text-secondary border-border bg-surface-raised",
     dot: "bg-text-muted",
   },
   enriched: {
     label: "Enriched",
-    style: "text-text-primary border-border bg-surface-raised",
+    style: "text-text-primary border-border bg-surface-raised font-medium",
     dot: "bg-text-secondary",
   },
   contacted: {
     label: "Contacted",
-    style: "text-amber-400 border-amber-500/25 bg-amber-500/10",
-    dot: "bg-amber-400",
+    style: "text-amber-700 border-amber-200 bg-amber-50 font-medium",
+    dot: "bg-amber-500",
   },
   replied: {
     label: "Replied",
-    style: "text-emerald-400 border-emerald-500/25 bg-emerald-500/10 font-medium",
-    dot: "bg-emerald-400 animate-pulse",
+    style: "text-emerald-700 border-emerald-200 bg-emerald-50 font-medium",
+    dot: "bg-emerald-500 animate-pulse",
   },
   qualified: {
     label: "Qualified",
-    style: "text-accent border-accent/30 bg-accent/10 font-medium",
-    dot: "bg-accent shadow-[0_0_6px_rgba(212,163,89,0.8)]",
+    style: "text-indigo-700 border-indigo-200 bg-indigo-50 font-medium",
+    dot: "bg-indigo-600 shadow-[0_0_6px_rgba(99,102,241,0.4)]",
   },
   meeting_booked: {
     label: "Meeting booked",
-    style: "text-emerald-300 border-emerald-500/35 bg-emerald-500/15 font-semibold",
-    dot: "bg-emerald-300 shadow-[0_0_6px_rgba(110,231,183,0.8)]",
+    style: "text-emerald-800 border-emerald-300 bg-emerald-50 font-semibold",
+    dot: "bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.4)]",
   },
   priced: {
     label: "Priced",
-    style: "text-accent border-accent/40 bg-accent/15 font-medium",
-    dot: "bg-accent",
+    style: "text-purple-700 border-purple-200 bg-purple-50 font-medium",
+    dot: "bg-purple-600",
   },
   won: {
     label: "Won",
-    style: "text-emerald-400 border-emerald-500/40 bg-emerald-500/20 font-semibold",
-    dot: "bg-emerald-400",
+    style: "text-emerald-800 border-emerald-300 bg-emerald-100/80 font-semibold",
+    dot: "bg-emerald-600",
   },
   lost: {
     label: "Lost",
-    style: "text-rose-400 border-rose-500/25 bg-rose-500/10",
-    dot: "bg-rose-400",
+    style: "text-rose-700 border-rose-200 bg-rose-50",
+    dot: "bg-rose-500",
   },
 };
 

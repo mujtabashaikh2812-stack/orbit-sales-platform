@@ -82,7 +82,7 @@ export default function ConversationsPage() {
             <div className="pt-2">
               <Link
                 href="/leads"
-                className="px-4 py-2 text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl shadow-sm inline-block active:scale-[0.98]"
+                className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl shadow-md inline-block active:scale-[0.98]"
               >
                 View Leads Ledger
               </Link>
@@ -235,7 +235,7 @@ export default function ConversationsPage() {
                   </span>
                   <Link
                     href={`/leads/${selectedLead.id}`}
-                    className="px-4 py-2 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-xl shadow-sm inline-flex items-center gap-1.5 active:scale-[0.98]"
+                    className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl shadow-md inline-flex items-center gap-1.5 active:scale-[0.98]"
                   >
                     <span>Manage Thread in Dossier</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />

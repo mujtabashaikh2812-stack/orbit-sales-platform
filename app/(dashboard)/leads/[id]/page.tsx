@@ -234,7 +234,7 @@ export default function LeadDetailPage({
           <button
             type="button"
             onClick={() => setIsOutreachModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl active:scale-[0.98]"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl active:scale-[0.98]"
           >
             <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Draft Cold Outreach</span>
@@ -355,7 +355,7 @@ export default function LeadDetailPage({
                         type="button"
                         disabled={enriching}
                         onClick={handleEnrichLead}
-                        className="px-2.5 py-1 text-[10px] font-sans font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 transition-all rounded-lg disabled:opacity-50 shadow-sm"
+                        className="px-2.5 py-1 text-[10px] font-sans font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-lg disabled:opacity-50 shadow-sm"
                       >
                         {enriching ? "Enriching..." : "Enrich via Hunter"}
                       </button>
@@ -507,17 +507,17 @@ export default function LeadDetailPage({
                       setQuoteInput(e.target.value === "" ? "" : Number(e.target.value))
                     }
                     placeholder="e.g. 15000"
-                    className="w-full bg-ink/70 border border-border/80 pl-8 pr-4 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                    className="w-full bg-white border border-border pl-8 pr-4 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl active:scale-[0.98]"
+                  className="px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl active:scale-[0.98]"
                 >
                   Save Quote Amount
                 </button>
                 {quoteSaved && (
-                  <span className="text-xs text-emerald-400 font-mono flex items-center gap-1">
+                  <span className="text-xs text-emerald-600 font-mono flex items-center gap-1 font-medium">
                     ✓ Saved to ledger
                   </span>
                 )}
@@ -538,7 +538,7 @@ export default function LeadDetailPage({
                     <button
                       type="button"
                       onClick={() => setIsQuoteModalOpen(true)}
-                      className="px-4 py-2 text-xs font-medium text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl inline-flex items-center gap-1.5 active:scale-[0.98]"
+                      className="px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl inline-flex items-center gap-1.5 active:scale-[0.98]"
                     >
                       <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
                       <span>Format & Send Quote (AI Relay)</span>

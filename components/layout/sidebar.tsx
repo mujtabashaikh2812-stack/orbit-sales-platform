@@ -32,17 +32,16 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 shrink-0 h-screen sticky top-0 bg-ink border-r border-border flex flex-col justify-between select-none z-40">
+    <aside className="w-64 shrink-0 h-screen sticky top-0 bg-white/85 backdrop-blur-xl border-r border-border flex flex-col justify-between select-none z-40 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
       <div>
         {/* Brand Header */}
         <div className="h-16 flex items-center px-5 border-b border-border">
           <Link href="/" className="flex items-center gap-3 group w-full">
-            {/* Celestial Orbit Icon */}
-            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center relative shadow-inner group-hover:border-accent/40 transition-colors">
-              <div className="w-3.5 h-3.5 rounded-full border border-accent/70 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            {/* Celestial Orbit Gradient Icon */}
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center relative shadow-sm text-white group-hover:scale-105 transition-transform">
+              <div className="w-3.5 h-3.5 rounded-full border border-white/80 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               </div>
-              <div className="absolute -inset-0.5 rounded-lg bg-accent/10 opacity-0 group-hover:opacity-100 blur-sm transition-opacity" />
             </div>
 
             <div>
@@ -50,7 +49,7 @@ export function Sidebar() {
                 <span className="font-serif text-lg tracking-tight text-text-primary font-medium">
                   Orbit
                 </span>
-                <span className="text-[10px] font-mono text-accent bg-accent/10 border border-accent/25 px-1.5 py-0.2 rounded">
+                <span className="text-[10px] font-mono font-bold text-accent bg-accent/10 border border-accent/25 px-1.5 py-0.2 rounded">
                   OS
                 </span>
               </div>
@@ -83,8 +82,8 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center justify-between px-3 py-2 text-xs rounded-lg transition-all duration-150 group relative",
                   isActive
-                    ? "bg-surface-raised text-text-primary font-medium border border-border shadow-card"
-                    : "text-text-secondary hover:text-text-primary hover:bg-surface/60"
+                    ? "bg-gradient-to-r from-indigo-50/90 to-purple-50/70 text-accent font-semibold border border-indigo-200/60 shadow-sm"
+                    : "text-text-secondary hover:text-text-primary hover:bg-surface-raised/70"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -92,7 +91,7 @@ export function Sidebar() {
                     className={cn(
                       "w-6 h-6 rounded-md flex items-center justify-center transition-colors",
                       isActive
-                        ? "bg-accent/10 text-accent"
+                        ? "bg-accent/15 text-accent"
                         : "text-text-muted group-hover:text-text-primary"
                     )}
                   >
@@ -103,9 +102,9 @@ export function Sidebar() {
 
                 <div className="flex items-center gap-1.5">
                   {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_8px_rgba(212,163,89,0.8)]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_8px_rgba(79,70,229,0.5)]" />
                   )}
-                  <span className="text-[10px] font-mono text-text-muted opacity-0 group-hover:opacity-100 transition-opacity border border-border/80 px-1 rounded bg-surface">
+                  <span className="text-[10px] font-mono text-text-muted opacity-0 group-hover:opacity-100 transition-opacity border border-border px-1 rounded bg-surface">
                     {item.shortcut}
                   </span>
                 </div>

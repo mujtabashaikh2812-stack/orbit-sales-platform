@@ -94,8 +94,8 @@ export function ReplySimulatorModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-surface-raised border border-border rounded-2xl p-6 space-y-5 shadow-glow animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between border-b border-border/80 pb-4">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-accent" />
@@ -106,7 +106,7 @@ export function ReplySimulatorModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface"
+            className="text-text-muted hover:text-text-primary transition-colors p-1.5 rounded-lg hover:bg-surface-raised"
           >
             <X className="w-4 h-4" />
           </button>
@@ -123,8 +123,8 @@ export function ReplySimulatorModal({
                 onClick={() => handleSelectPreset(i)}
                 className={`p-2.5 text-left text-xs rounded-xl border transition-all ${
                   selectedPreset === i
-                    ? "border-accent/60 bg-accent/15 text-accent font-medium shadow-sm"
-                    : "border-border/80 bg-surface text-text-secondary hover:text-text-primary hover:border-border"
+                    ? "border-indigo-400/60 bg-indigo-50/80 text-accent font-medium shadow-sm"
+                    : "border-border/80 bg-surface-raised text-text-secondary hover:text-text-primary hover:border-border"
                 }`}
               >
                 {p.label}
@@ -142,7 +142,7 @@ export function ReplySimulatorModal({
               required
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full bg-ink/70 border border-border/80 px-3.5 py-2 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+              className="w-full bg-white border border-border px-3.5 py-2 text-xs text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
             />
           </div>
 
@@ -153,7 +153,7 @@ export function ReplySimulatorModal({
               required
               value={replyBody}
               onChange={(e) => setReplyBody(e.target.value)}
-              className="w-full bg-ink/70 border border-border/80 p-3.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none font-sans leading-relaxed shadow-inner transition-colors"
+              className="w-full bg-white border border-border p-3.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none font-sans leading-relaxed shadow-sm transition-colors"
             />
           </div>
 
@@ -178,7 +178,7 @@ export function ReplySimulatorModal({
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl disabled:opacity-50 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl disabled:opacity-50 active:scale-[0.98]"
             >
               {loading ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

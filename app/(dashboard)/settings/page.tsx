@@ -64,7 +64,7 @@ export default function SettingsPage() {
                 type="text"
                 value={targetName}
                 onChange={(e) => setTargetName(e.target.value)}
-                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                className="w-full bg-white border border-border px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
               />
             </div>
 
@@ -74,7 +74,7 @@ export default function SettingsPage() {
                 type="text"
                 value={targetIndustry}
                 onChange={(e) => setTargetIndustry(e.target.value)}
-                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                className="w-full bg-white border border-border px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
               />
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function SettingsPage() {
                 type="number"
                 value={minSize}
                 onChange={(e) => setMinSize(Number(e.target.value))}
-                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                className="w-full bg-white border border-border px-3.5 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
               />
             </div>
 
@@ -96,7 +96,7 @@ export default function SettingsPage() {
                 type="number"
                 value={maxSize}
                 onChange={(e) => setMaxSize(Number(e.target.value))}
-                className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+                className="w-full bg-white border border-border px-3.5 py-2.5 text-sm text-text-primary font-mono rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
               />
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function SettingsPage() {
               type="text"
               value={titles}
               onChange={(e) => setTitles(e.target.value)}
-              className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-inner transition-colors"
+              className="w-full bg-white border border-border px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm transition-colors"
             />
           </div>
 
@@ -119,13 +119,13 @@ export default function SettingsPage() {
               rows={3}
               value={valueProp}
               onChange={(e) => setValueProp(e.target.value)}
-              className="w-full bg-ink/70 border border-border/80 px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none shadow-inner leading-relaxed transition-colors"
+              className="w-full bg-white border border-border px-3.5 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-accent resize-none shadow-sm leading-relaxed transition-colors"
             />
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border/60">
             {icpSaved ? (
-              <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5">
+              <span className="text-xs text-emerald-600 font-mono flex items-center gap-1.5 font-medium">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Configuration synchronized with live agent</span>
               </span>
@@ -136,7 +136,7 @@ export default function SettingsPage() {
             )}
             <button
               type="submit"
-              className="px-5 py-2.5 text-xs font-semibold text-ink bg-gradient-to-r from-accent to-[#E0B268] hover:brightness-110 shadow-sm transition-all rounded-xl active:scale-[0.98] w-fit"
+              className="px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl active:scale-[0.98] w-fit"
             >
               Save ICP Criteria
             </button>

@@ -105,7 +105,7 @@ export function CadenceTimelineCard({ lead, onLeadUpdated }: CadenceTimelineCard
           <button
             onClick={() => callCadenceApi({ action: "enroll" }, "enroll")}
             disabled={loadingAction !== null || !lead.email}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent hover:bg-accent/90 text-surface-dark font-medium text-xs shadow-sm transition disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-medium text-xs shadow-md shadow-indigo-500/10 transition disabled:opacity-50"
           >
             {loadingAction === "enroll" ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -191,17 +191,17 @@ export function CadenceTimelineCard({ lead, onLeadUpdated }: CadenceTimelineCard
           <div className={cn(
             "p-3.5 rounded-lg border text-xs transition",
             status === "completed_booked"
-              ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-300"
+              ? "bg-emerald-50 border-emerald-300 text-emerald-800"
               : status === "completed_lost"
-              ? "bg-rose-500/10 border-rose-500/40 text-rose-300"
+              ? "bg-rose-50 border-rose-300 text-rose-800"
               : "bg-surface-raised/40 border-border/50 text-text-secondary"
           )}>
             <div className="flex items-center justify-between mb-1.5">
               <span className="font-mono text-[10px] uppercase">Outcome</span>
               {status === "completed_booked" ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               ) : status === "completed_lost" ? (
-                <AlertOctagon className="w-4 h-4 text-rose-400" />
+                <AlertOctagon className="w-4 h-4 text-rose-600" />
               ) : (
                 <ChevronRight className="w-3.5 h-3.5 text-text-secondary" />
               )}
@@ -262,12 +262,12 @@ export function CadenceTimelineCard({ lead, onLeadUpdated }: CadenceTimelineCard
               )
             }
             disabled={loadingAction !== null}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-emerald-500/40 text-text-primary hover:text-emerald-400 text-xs font-medium transition disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-emerald-500/60 text-text-primary hover:text-emerald-700 text-xs font-medium transition disabled:opacity-50"
           >
             {loadingAction === "sim_question" ? (
               <RefreshCw className="w-3 h-3 animate-spin" />
             ) : (
-              <Send className="w-3 h-3 text-emerald-400" />
+              <Send className="w-3 h-3 text-emerald-600" />
             )}
             📩 Simulate Interested Client Reply
           </button>
@@ -284,12 +284,12 @@ export function CadenceTimelineCard({ lead, onLeadUpdated }: CadenceTimelineCard
               )
             }
             disabled={loadingAction !== null}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-rose-500/40 text-text-primary hover:text-rose-400 text-xs font-medium transition disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-rose-500/60 text-text-primary hover:text-rose-700 text-xs font-medium transition disabled:opacity-50"
           >
             {loadingAction === "sim_rejection" ? (
               <RefreshCw className="w-3 h-3 animate-spin" />
             ) : (
-              <UserX className="w-3 h-3 text-rose-400" />
+              <UserX className="w-3 h-3 text-rose-600" />
             )}
             🛑 Simulate Rejection / Opt-Out
           </button>
@@ -303,12 +303,12 @@ export function CadenceTimelineCard({ lead, onLeadUpdated }: CadenceTimelineCard
               )
             }
             disabled={loadingAction !== null}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-emerald-500/40 text-text-primary hover:text-emerald-400 text-xs font-medium transition disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-emerald-500/60 text-text-primary hover:text-emerald-700 text-xs font-medium transition disabled:opacity-50"
           >
             {loadingAction === "confirm_booking" ? (
               <RefreshCw className="w-3 h-3 animate-spin" />
             ) : (
-              <CalendarCheck className="w-3 h-3 text-emerald-400" />
+              <CalendarCheck className="w-3 h-3 text-emerald-600" />
             )}
             🎉 Confirm Meeting Booked
           </button>
@@ -317,15 +317,15 @@ export function CadenceTimelineCard({ lead, onLeadUpdated }: CadenceTimelineCard
         {/* Feedback Message */}
         {feedback && (
           <div className={cn(
-            "mt-3 text-xs p-2.5 rounded-md border flex items-center gap-2",
+            "mt-3 text-xs p-2.5 rounded-md border flex items-center gap-2 font-medium",
             feedback.type === "success" 
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-              : "bg-rose-500/10 border-rose-500/30 text-rose-300"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : "bg-rose-50 border-rose-200 text-rose-800"
           )}>
             {feedback.type === "success" ? (
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
             ) : (
-              <AlertOctagon className="w-4 h-4 shrink-0 text-rose-400" />
+              <AlertOctagon className="w-4 h-4 shrink-0 text-rose-600" />
             )}
             <span>{feedback.message}</span>
           </div>

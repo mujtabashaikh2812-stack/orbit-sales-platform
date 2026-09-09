@@ -237,8 +237,8 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
             <div className="flex items-center gap-2 font-medium text-text-primary">
               <span>Autonomous Cadence</span>
               {activeCadenceCount > 0 ? (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   {activeCadenceCount} Active
                 </span>
               ) : (
@@ -258,7 +258,7 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
             type="button"
             disabled={cadenceLoading}
             onClick={handleBatchEnroll}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent/90 text-surface-dark font-medium text-xs shadow-sm transition disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-medium text-xs shadow-sm transition disabled:opacity-50"
           >
             {cadenceLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
             <span>Enroll All Enriched</span>
@@ -379,13 +379,13 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                         {lead.email ? (
                           <div className="flex items-center gap-2 font-mono text-[11px]">
                             {lead.email_verified ? (
-                              <span className="inline-flex items-center gap-1 text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full text-[10px]">
-                                <CheckCircle2 className="w-3 h-3 shrink-0" />
+                              <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-medium">
+                                <CheckCircle2 className="w-3 h-3 shrink-0 text-emerald-600" />
                                 <span>Verified</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-full text-[10px]">
-                                <AlertCircle className="w-3 h-3 shrink-0" />
+                              <span className="inline-flex items-center gap-1 text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full text-[10px] font-medium">
+                                <AlertCircle className="w-3 h-3 shrink-0 text-amber-600" />
                                 <span>Unconfirmed</span>
                               </span>
                             )}
@@ -411,16 +411,16 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                       {/* Cadence Status */}
                       <td className="py-3.5 px-5">
                         {lead.cadence_status === "active" ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             Touch {lead.cadence_step || 1}/3
                           </span>
                         ) : lead.cadence_status === "completed_booked" ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                             🎉 Booked
                           </span>
                         ) : lead.cadence_status === "completed_lost" ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-500/15 text-rose-400 border border-rose-500/40 whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
                             🛑 Lost
                           </span>
                         ) : (
@@ -440,7 +440,7 @@ export function LeadTable({ initialLeads }: LeadTableProps) {
                               handleStageChange(lead.id, e.target.value as LeadStage)
                             }
                             onClick={(e) => e.stopPropagation()}
-                            className="opacity-0 group-hover:opacity-100 bg-ink border border-border text-[10px] font-mono text-text-secondary rounded-md px-2 py-0.5 focus:opacity-100 focus:outline-none focus:border-accent transition-all cursor-pointer"
+                            className="opacity-0 group-hover:opacity-100 bg-surface border border-border text-[10px] font-mono text-text-secondary rounded-md px-2 py-0.5 focus:opacity-100 focus:outline-none focus:border-accent shadow-sm transition-all cursor-pointer"
                           >
                             <option value="sourced">Move: Sourced</option>
                             <option value="enriched">Move: Enriched</option>
