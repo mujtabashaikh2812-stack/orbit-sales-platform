@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
   Users, 
+  TrendingUp,
   MessageSquare, 
   Calendar, 
   Sliders,
@@ -23,9 +24,10 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard, shortcut: "1" },
   { label: "Leads", href: "/leads", icon: Users, shortcut: "2" },
-  { label: "Conversations", href: "/conversations", icon: MessageSquare, shortcut: "3" },
-  { label: "Meetings", href: "/meetings", icon: Calendar, shortcut: "4" },
-  { label: "Settings", href: "/settings", icon: Sliders, shortcut: "5" },
+  { label: "Analytics", href: "/analytics", icon: TrendingUp, shortcut: "3" },
+  { label: "Conversations", href: "/conversations", icon: MessageSquare, shortcut: "4" },
+  { label: "Meetings", href: "/meetings", icon: Calendar, shortcut: "5" },
+  { label: "Settings", href: "/settings", icon: Sliders, shortcut: "6" },
 ];
 
 export function Sidebar() {

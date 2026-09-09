@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Clock, Plus, Users, Calendar, Sparkles } from "lucide-react";
+import { ArrowUpRight, Clock, Plus, Users, Calendar, Sparkles, TrendingUp } from "lucide-react";
 import { getLeads, getLeadsSync, INITIAL_LEADS, LeadDetail } from "@/lib/db/leads";
 import { LeadStage } from "@/lib/types";
 import { StageBadge } from "@/components/leads/stage-badge";
@@ -168,10 +168,17 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Link
+              href="/analytics"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-text-primary bg-white border border-border/80 hover:bg-surface-raised shadow-sm transition-all"
+            >
+              <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Revenue Intelligence</span>
+            </Link>
             <Link
               href="/leads"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all duration-150 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 shadow-md transition-all duration-150 active:scale-[0.98]"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Source New Prospects</span>
@@ -181,78 +188,105 @@ export default function DashboardPage() {
       </div>
 
       {/* Luxury KPI Metric Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Contacted */}
-        <div className="p-6 rounded-xl bg-surface border border-border hover:border-border-highlight/60 transition-all duration-300 shadow-card hover:shadow-card-hover space-y-4 group">
+        <div className="p-5 rounded-2xl bg-white border border-border/80 shadow-card hover:shadow-card-hover transition-all space-y-3 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-text-secondary tracking-wide">
+            <span className="text-xs font-medium text-text-secondary">
               Active Contacted
             </span>
-            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-accent transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-accent transition-colors">
               <Users className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <div className="font-mono text-3xl md:text-4xl text-text-primary font-medium tracking-tight">
+            <div className="font-mono text-3xl text-text-primary font-medium tracking-tight">
               {loading ? "..." : contactedCount}
             </div>
-            <span className="text-[11px] font-mono text-text-muted bg-surface-raised px-2 py-0.5 rounded border border-border/80">
+            <span className="text-[10px] font-mono text-text-secondary bg-surface-raised px-2 py-0.5 rounded border border-border">
               ICP Target
             </span>
           </div>
-          <div className="text-[11px] text-text-muted font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
+          <div className="text-[11px] text-text-secondary font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
             <span className="text-accent font-medium">100%</span>
-            <span>automated delivery via Gmail API</span>
+            <span>automated delivery via Cadence</span>
           </div>
         </div>
 
         {/* Reply Rate */}
-        <div className="p-6 rounded-xl bg-surface border border-border hover:border-border-highlight/60 transition-all duration-300 shadow-card hover:shadow-card-hover space-y-4 group">
+        <div className="p-5 rounded-2xl bg-white border border-border/80 shadow-card hover:shadow-card-hover transition-all space-y-3 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-text-secondary tracking-wide">
+            <span className="text-xs font-medium text-text-secondary">
               Inbound Reply Velocity
             </span>
-            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-emerald-400 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <div className="font-mono text-3xl md:text-4xl text-accent font-medium tracking-tight">
+            <div className="font-mono text-3xl text-emerald-700 font-medium tracking-tight">
               {loading ? "..." : `${replyRate}%`}
             </div>
-            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold">
               ↑ High Intent
             </span>
           </div>
-          <div className="text-[11px] text-text-muted font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
+          <div className="text-[11px] text-text-secondary font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
             <span>Classified by</span>
-            <span className="text-text-secondary font-medium">Claude 3.5 Sonnet</span>
+            <span className="text-text-primary font-medium">Claude 3.5 Sonnet</span>
           </div>
         </div>
 
         {/* Meetings Booked */}
-        <div className="p-6 rounded-xl bg-surface border border-border hover:border-border-highlight/60 transition-all duration-300 shadow-card hover:shadow-card-hover space-y-4 group">
+        <div className="p-5 rounded-2xl bg-white border border-border/80 shadow-card hover:shadow-card-hover transition-all space-y-3 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-text-secondary tracking-wide">
+            <span className="text-xs font-medium text-text-secondary">
               Discovery Calls Booked
             </span>
-            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-text-muted group-hover:text-accent transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <div className="font-mono text-3xl md:text-4xl text-text-primary font-medium tracking-tight">
+            <div className="font-mono text-3xl text-text-primary font-medium tracking-tight">
               {loading ? "..." : meetingsCount}
             </div>
-            <span className="text-[11px] font-mono text-accent bg-accent/10 border border-accent/25 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded font-bold">
               Confirmed
             </span>
           </div>
-          <div className="text-[11px] text-text-muted font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
+          <div className="text-[11px] text-text-secondary font-mono flex items-center gap-1.5 pt-1 border-t border-border/60">
             <span>Synced to</span>
-            <span className="text-text-secondary font-medium">Google Calendar API</span>
+            <span className="text-text-primary font-medium">Google Calendar</span>
           </div>
         </div>
+
+        {/* Weighted Pipeline Revenue */}
+        <Link 
+          href="/analytics"
+          className="p-5 rounded-2xl bg-gradient-to-br from-indigo-50/70 via-purple-50/30 to-pink-50/40 border border-indigo-200/80 shadow-card hover:shadow-card-hover hover:border-indigo-300 transition-all space-y-3 group block"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-indigo-900">
+              Weighted Pipeline
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-white border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs group-hover:scale-105 transition-transform">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <div className="font-mono text-3xl text-indigo-900 font-bold tracking-tight">
+              $38.2k
+            </div>
+            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold">
+              +24.8%
+            </span>
+          </div>
+          <div className="text-[11px] text-indigo-800 font-medium flex items-center justify-between pt-1 border-t border-indigo-100">
+            <span>View Full Analytics</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-indigo-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </div>
+        </Link>
       </section>
 
       {/* Interactive Pipeline Progression Visualizer */}
