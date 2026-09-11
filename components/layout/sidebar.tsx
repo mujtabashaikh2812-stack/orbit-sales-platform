@@ -10,7 +10,8 @@ import {
   Calendar, 
   Sliders,
   ShieldCheck,
-  Circle
+  Circle,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,37 +31,58 @@ const navItems: NavItem[] = [
   { label: "Settings", href: "/settings", icon: Sliders, shortcut: "6" },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
 
-  return (
-    <aside className="w-64 shrink-0 h-screen sticky top-0 bg-white/85 backdrop-blur-xl border-r border-border flex flex-col justify-between select-none z-40 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
-      <div>
-        {/* Brand Header */}
-        <div className="h-16 flex items-center px-5 border-b border-border">
-          <Link href="/" className="flex items-center gap-3 group w-full">
-            {/* Celestial Orbit Gradient Icon */}
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center relative shadow-sm text-white group-hover:scale-105 transition-transform">
-              <div className="w-3.5 h-3.5 rounded-full border border-white/80 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+  function renderSidebarContent(isMobile: boolean = false) {
+    return (
+      <>
+        <div>
+          {/* Brand Header */}
+          <div className="h-16 flex items-center justify-between px-5 border-b border-border">
+            <Link 
+              href="/" 
+              onClick={() => isMobile && onClose?.()}
+              className="flex items-center gap-3 group"
+            >
+              {/* Celestial Orbit Gradient Icon */}
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center relative shadow-sm text-white group-hover:scale-105 transition-transform">
+                <div className="w-3.5 h-3.5 rounded-full border border-white/80 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-serif text-lg tracking-tight text-text-primary font-medium">
-                  Orbit
-                </span>
-                <span className="text-[10px] font-mono font-bold text-accent bg-accent/10 border border-accent/25 px-1.5 py-0.2 rounded">
-                  OS
-                </span>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-serif text-lg tracking-tight text-text-primary font-medium">
+                    Orbit
+                  </span>
+                  <span className="text-[10px] font-mono font-bold text-accent bg-accent/10 border border-accent/25 px-1.5 py-0.2 rounded">
+                    OS
+                  </span>
+                </div>
+                <div className="text-[10px] font-mono text-text-muted -mt-0.5">
+                  Solo Sales Ledger
+                </div>
               </div>
-              <div className="text-[10px] font-mono text-text-muted -mt-0.5">
-                Solo Sales Ledger
-              </div>
-            </div>
-          </Link>
-        </div>
+            </Link>
+
+            {isMobile && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-raised transition-colors"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
 
         {/* Section Label */}
         <div className="px-5 pt-5 pb-2 text-[10px] font-mono tracking-wider text-text-muted uppercase">
@@ -81,6 +103,7 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 prefetch={true}
+                onClick={() => isMobile && onClose?.()}
                 className={cn(
                   "flex items-center justify-between px-3 py-2 text-xs rounded-lg transition-all duration-150 group relative",
                   isActive
@@ -143,6 +166,35 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-    </aside>
+    </>
+  );
+}
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-64 shrink-0 h-screen sticky top-0 bg-white/85 backdrop-blur-xl border-r border-border flex-col justify-between select-none z-40 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
+        {renderSidebarContent(false)}
+      </aside>
+
+      {/* Mobile Backdrop Overlay */}
+      <div 
+        onClick={onClose}
+        className={cn(
+          "fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 lg:hidden transition-opacity duration-300",
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+      />
+
+      {/* Mobile Slide-Over Drawer */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-72 bg-white/95 backdrop-blur-2xl border-r border-border flex lg:hidden flex-col justify-between select-none shadow-2xl transform transition-transform duration-300 ease-in-out",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        {renderSidebarContent(true)}
+      </aside>
+    </>
   );
 }

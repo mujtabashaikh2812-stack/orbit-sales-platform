@@ -75,8 +75,8 @@ export function MeetingBookingModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+      <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between border-b border-border/80 pb-4">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-accent" />
@@ -166,18 +166,18 @@ export function MeetingBookingModal({
               />
             </div>
 
-            <div className="pt-3 border-t border-border/80 flex items-center justify-end gap-3">
+            <div className="pt-3 border-t border-border/80 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs text-text-secondary hover:text-text-primary transition-colors rounded-xl"
+                className="px-4 py-2.5 sm:py-2 text-xs text-text-secondary hover:text-text-primary transition-colors rounded-xl text-center"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl disabled:opacity-50 active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl disabled:opacity-50 active:scale-[0.98] text-center"
               >
                 {loading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />

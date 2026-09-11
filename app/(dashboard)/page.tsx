@@ -147,7 +147,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-10">
       {/* Executive Briefing Hero */}
-      <div className="relative rounded-2xl p-7 bg-gradient-to-br from-surface to-surface-raised border border-border/80 overflow-hidden shadow-card">
+      <div className="relative rounded-2xl p-4 sm:p-7 bg-gradient-to-br from-surface to-surface-raised border border-border/80 overflow-hidden shadow-card">
         {/* Subtle Ambient Golden Glow */}
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-emerald-500/5 blur-3xl pointer-events-none" />
@@ -168,17 +168,17 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0 w-full sm:w-auto">
             <Link
               href="/analytics"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-text-primary bg-white border border-border/80 hover:bg-surface-raised shadow-sm transition-all"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-text-primary bg-white border border-border/80 hover:bg-surface-raised shadow-sm transition-all"
             >
               <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
               <span>Revenue Intelligence</span>
             </Link>
             <Link
               href="/leads"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 shadow-md transition-all duration-150 active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 shadow-md transition-all duration-150 active:scale-[0.98]"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Source New Prospects</span>

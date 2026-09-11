@@ -98,7 +98,7 @@ export function RevenueAreaChart({ data, timeframe }: RevenueAreaChartProps) {
   const activeHoverPipelinePt = hoverIndex !== null && points.pipeline[hoverIndex] ? points.pipeline[hoverIndex] : null;
 
   return (
-    <div className="bg-white rounded-2xl border border-border/80 p-6 shadow-card space-y-5">
+    <div className="bg-white rounded-2xl border border-border/80 p-4 sm:p-6 shadow-card space-y-5">
       {/* Header controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -114,7 +114,7 @@ export function RevenueAreaChart({ data, timeframe }: RevenueAreaChartProps) {
         </div>
 
         {/* Series filters */}
-        <div className="flex items-center gap-1 bg-surface-raised p-1 rounded-xl border border-border/60 text-xs font-medium">
+        <div className="flex flex-wrap items-center gap-1 bg-surface-raised p-1 rounded-xl border border-border/60 text-xs font-medium self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setActiveMetric("both")}

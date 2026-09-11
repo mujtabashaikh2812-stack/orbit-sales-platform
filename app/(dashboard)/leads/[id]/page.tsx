@@ -196,19 +196,19 @@ export default function LeadDetailPage({
       </div>
 
       {/* Header Profile with Luxury Monogram & Status */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-border pb-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-surface-raised border border-border/80 flex items-center justify-center font-mono text-base text-accent font-semibold shadow-card shrink-0">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 border-b border-border pb-6">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-surface-raised border border-border/80 flex items-center justify-center font-mono text-sm sm:text-base text-accent font-semibold shadow-card shrink-0">
             {lead.company_name.slice(0, 2).toUpperCase()}
           </div>
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="font-serif text-2xl md:text-3xl text-text-primary font-medium tracking-tight">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl text-text-primary font-medium tracking-tight">
                 {lead.company_name}
               </h1>
               <StageBadge stage={lead.stage} />
             </div>
-            <div className="flex items-center gap-2.5 text-xs text-text-secondary mt-1">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary mt-1">
               <span className="text-text-primary font-medium">{lead.contact_name}</span>
               {lead.contact_title && <span>· {lead.contact_title}</span>}
               {lead.company_domain && (
@@ -230,11 +230,11 @@ export default function LeadDetailPage({
         </div>
 
         {/* Quick Advance Controls */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => setIsOutreachModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-md transition-all rounded-xl active:scale-[0.98] flex-1 sm:flex-none"
           >
             <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Draft Cold Outreach</span>
@@ -243,17 +243,17 @@ export default function LeadDetailPage({
           <button
             type="button"
             onClick={() => setIsMeetingModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-text-primary bg-surface-raised border border-border hover:border-accent/50 hover:text-accent transition-all rounded-xl shadow-sm active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 text-xs font-medium text-text-primary bg-surface-raised border border-border hover:border-accent/50 hover:text-accent transition-all rounded-xl shadow-sm active:scale-[0.98] flex-1 sm:flex-none"
           >
             <Calendar className="w-3.5 h-3.5 text-accent" />
             <span>Book Meeting</span>
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <select
               value={lead.stage}
               onChange={(e) => handleStageAdvance(e.target.value as LeadStage)}
-              className="bg-surface-raised border border-border text-xs font-mono text-text-primary px-3 py-2 rounded-xl focus:outline-none focus:border-accent shadow-sm cursor-pointer"
+              className="w-full sm:w-auto bg-surface-raised border border-border text-xs font-mono text-text-primary px-3 py-2 rounded-xl focus:outline-none focus:border-accent shadow-sm cursor-pointer"
             >
               <option value="sourced">Stage: Sourced</option>
               <option value="enriched">Stage: Enriched</option>
@@ -270,14 +270,14 @@ export default function LeadDetailPage({
       </div>
 
       {/* Pipeline Stage Progression Stepper */}
-      <div className="rounded-2xl border border-border bg-gradient-to-r from-surface to-surface-raised p-5 shadow-card">
-        <div className="text-[10px] font-mono text-text-muted mb-3 flex justify-between items-center tracking-wider uppercase">
+      <div className="rounded-2xl border border-border bg-gradient-to-r from-surface to-surface-raised p-4 sm:p-5 shadow-card">
+        <div className="text-[10px] font-mono text-text-muted mb-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 tracking-wider uppercase">
           <span>PIPELINE PROGRESSION SEQUENCE</span>
           <span>
             Updated: {new Date(lead.stage_updated_at || lead.updated_at).toLocaleString()}
           </span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        <div className="flex sm:grid sm:grid-cols-4 lg:grid-cols-7 gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           {PIPELINE_SEQUENCE.map((s, idx) => {
             const isCurrent = lead.stage === s;
             const currentIndex = PIPELINE_SEQUENCE.indexOf(lead.stage);
@@ -288,7 +288,7 @@ export default function LeadDetailPage({
                 key={s}
                 onClick={() => handleStageAdvance(s)}
                 className={cn(
-                  "p-2.5 text-left rounded-xl border transition-all duration-150 shadow-sm",
+                  "p-2.5 text-left rounded-xl border transition-all duration-150 shadow-sm min-w-[105px] sm:min-w-0 flex-1 shrink-0",
                   isCurrent
                     ? "border-accent/60 bg-accent/15 text-accent font-medium shadow-[0_0_15px_rgba(212,163,89,0.15)]"
                     : isPast

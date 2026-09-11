@@ -280,7 +280,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
 
       {/* Main Natural Language Command Prompt Form */}
       <form onSubmit={(e) => handleAiPromptSubmit(e)} className="space-y-2.5">
-        <div className="relative flex items-center gap-2">
+        <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <div className="relative flex-1">
             <Sparkles className="w-4 h-4 text-accent absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
@@ -295,7 +295,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
           <button
             type="submit"
             disabled={aiSearching || !prompt.trim()}
-            className="px-4 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl disabled:opacity-40 shadow-sm active:scale-[0.98] inline-flex items-center gap-2 shrink-0"
+            className="px-4 py-2.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 transition-all rounded-xl disabled:opacity-40 shadow-sm active:scale-[0.98] inline-flex items-center justify-center gap-2 shrink-0"
           >
             {aiSearching ? (
               <>
@@ -405,13 +405,13 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
 
             {/* Inputs & Manual Source Button */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2 flex-1">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1">
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={`Search keyword for ${activeManualMeta.label}...`}
-                  className="flex-1 bg-white border border-border px-3 py-1.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm"
+                  className="flex-1 bg-white border border-border px-3 py-2 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm"
                 />
                 {(selectedChannel === "google_maps" || selectedChannel === "yellow_pages") && (
                   <input
@@ -419,7 +419,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder="Location / City..."
-                    className="w-40 bg-white border border-border px-3 py-1.5 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm"
+                    className="w-full sm:w-40 bg-white border border-border px-3 py-2 text-xs text-text-primary rounded-xl focus:outline-none focus:border-accent shadow-sm"
                   />
                 )}
               </div>
@@ -428,7 +428,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
                 type="button"
                 disabled={manualSourcing}
                 onClick={handleManualSource}
-                className="px-3.5 py-1.5 text-xs font-medium text-text-primary bg-surface-raised hover:bg-surface-hover border border-border rounded-xl disabled:opacity-50 inline-flex items-center gap-1.5 shrink-0"
+                className="px-3.5 py-2 text-xs font-medium text-text-primary bg-surface-raised hover:bg-surface-hover border border-border rounded-xl disabled:opacity-50 inline-flex items-center justify-center gap-1.5 shrink-0"
               >
                 {manualSourcing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
                 <span>Pull from {activeManualMeta.label}</span>

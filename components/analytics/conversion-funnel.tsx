@@ -14,7 +14,7 @@ export function ConversionFunnel({ funnel }: ConversionFunnelProps) {
   const bottleneck = funnel.find((f) => f.isBottleneck);
 
   return (
-    <div className="bg-white rounded-2xl border border-border/80 p-6 shadow-card space-y-5">
+    <div className="bg-white rounded-2xl border border-border/80 p-4 sm:p-6 shadow-card space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>

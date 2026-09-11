@@ -125,7 +125,7 @@ export default function LeadsPage() {
             Prospect directory, contact status, and pipeline stages
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={loadLeads}
@@ -136,15 +136,15 @@ export default function LeadsPage() {
           </button>
           <Link
             href="/settings"
-            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-all rounded-xl shadow-sm active:scale-[0.98]"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-2 text-xs text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-all rounded-xl shadow-sm active:scale-[0.98]"
           >
             <Sliders className="w-3.5 h-3.5" />
-            <span>Targeting Settings</span>
+            <span><span className="hidden sm:inline">Targeting </span>Settings</span>
           </Link>
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl shadow-md active:scale-[0.98]"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 transition-all rounded-xl shadow-md active:scale-[0.98]"
           >
             <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Add Lead</span>

@@ -9,14 +9,20 @@ import {
   ChevronRight, 
   Bell, 
   Search,
-  Zap
+  Zap,
+  Menu
 } from "lucide-react";
 
-export function TopHeader() {
+interface TopHeaderProps {
+  onOpenMenu?: () => void;
+}
+
+export function TopHeader({ onOpenMenu }: TopHeaderProps) {
   const pathname = usePathname();
 
   function getBreadcrumb() {
     if (pathname === "/") return { title: "Dashboard", category: "Ledger" };
+    if (pathname === "/analytics") return { title: "Executive Analytics", category: "Revenue" };
     if (pathname.startsWith("/leads/")) return { title: "Lead Dossier", category: "CRM" };
     if (pathname === "/leads") return { title: "Leads CRM", category: "Prospecting" };
     if (pathname === "/conversations") return { title: "Conversations", category: "Outreach" };
@@ -28,22 +34,32 @@ export function TopHeader() {
   const { title, category } = getBreadcrumb();
 
   return (
-    <header className="h-16 border-b border-border bg-white/80 backdrop-blur-xl sticky top-0 z-30 px-8 flex items-center justify-between transition-colors shadow-[0_1px_10px_rgba(0,0,0,0.02)]">
-      {/* Left: Breadcrumb Trail */}
-      <div className="flex items-center gap-2.5 text-xs font-mono">
-        <span className="text-text-muted hover:text-text-secondary transition-colors">
+    <header className="h-16 border-b border-border bg-white/80 backdrop-blur-xl sticky top-0 z-30 px-3.5 sm:px-6 lg:px-8 flex items-center justify-between transition-colors shadow-[0_1px_10px_rgba(0,0,0,0.02)]">
+      {/* Left: Mobile Hamburger & Breadcrumb Trail */}
+      <div className="flex items-center gap-2 sm:gap-2.5 text-xs font-mono">
+        {/* Mobile Hamburger Button */}
+        <button
+          type="button"
+          onClick={onOpenMenu}
+          className="p-1.5 -ml-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-raised lg:hidden transition-colors"
+          aria-label="Open navigation menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        <span className="text-text-muted hover:text-text-secondary transition-colors hidden sm:inline">
           Orbit
         </span>
-        <ChevronRight className="w-3 h-3 text-text-muted" />
-        <span className="text-text-secondary">{category}</span>
-        <ChevronRight className="w-3 h-3 text-text-muted" />
-        <span className="text-text-primary font-semibold tracking-tight">
+        <ChevronRight className="w-3 h-3 text-text-muted hidden sm:inline" />
+        <span className="text-text-secondary hidden md:inline">{category}</span>
+        <ChevronRight className="w-3 h-3 text-text-muted hidden md:inline" />
+        <span className="text-text-primary font-semibold tracking-tight truncate max-w-[150px] sm:max-w-none">
           {title}
         </span>
       </div>
 
       {/* Right: Operational Controls */}
-      <div className="flex items-center gap-3.5">
+      <div className="flex items-center gap-2 sm:gap-3.5">
         {/* Model Engine Status Pill */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono shadow-sm">
           <span className="relative flex h-2 w-2">
@@ -62,17 +78,18 @@ export function TopHeader() {
         {/* Fast Action CTA */}
         <Link
           href="/leads"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-sm transition-all duration-150 active:scale-[0.98]"
+          className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs font-medium text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-105 shadow-sm transition-all duration-150 active:scale-[0.98]"
         >
           <Plus className="w-3.5 h-3.5 text-white stroke-[2.5]" />
-          <span>New Lead</span>
+          <span className="hidden sm:inline">New Lead</span>
+          <span className="sm:hidden font-semibold">New</span>
         </Link>
 
         {/* Divider */}
         <div className="h-5 w-[1px] bg-border mx-0.5" />
 
         {/* Operator Profile Chip */}
-        <div className="flex items-center gap-2 pl-1">
+        <div className="flex items-center gap-2 pl-0.5 sm:pl-1">
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 border border-indigo-200/80 flex items-center justify-center text-xs font-mono text-accent font-semibold shadow-sm">
             MS
           </div>

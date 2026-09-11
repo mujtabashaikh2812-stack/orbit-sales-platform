@@ -14,7 +14,7 @@ export function CadenceAnalytics({ touchpoints, sentiment }: CadenceAnalyticsPro
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Touchpoint Conversion Waterfall */}
-      <div className="bg-white rounded-2xl border border-border/80 p-6 shadow-card space-y-5">
+      <div className="bg-white rounded-2xl border border-border/80 p-4 sm:p-6 shadow-card space-y-5">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
@@ -77,7 +77,7 @@ export function CadenceAnalytics({ touchpoints, sentiment }: CadenceAnalyticsPro
       </div>
 
       {/* Inbound Reply Sentiment Breakdown */}
-      <div className="bg-white rounded-2xl border border-border/80 p-6 shadow-card space-y-5">
+      <div className="bg-white rounded-2xl border border-border/80 p-4 sm:p-6 shadow-card space-y-5">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />

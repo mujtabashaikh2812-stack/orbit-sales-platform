@@ -70,7 +70,7 @@ export function RevenueSimulator() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-border/80 p-6 shadow-card space-y-6">
+    <div className="bg-white rounded-2xl border border-border/80 p-4 sm:p-6 shadow-card space-y-6">
       {/* Header & Presets */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -87,7 +87,7 @@ export function RevenueSimulator() {
         </div>
 
         {/* Quick presets */}
-        <div className="flex items-center gap-1 bg-surface-raised p-1 rounded-xl border border-border/60 text-xs">
+        <div className="flex flex-wrap items-center gap-1 bg-surface-raised p-1 rounded-xl border border-border/60 text-xs self-start sm:self-auto">
           {PRESETS.map((p) => {
             const isActive =
               leadsVolume === p.leads &&
