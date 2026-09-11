@@ -85,6 +85,50 @@ const LOCAL_BUSINESS_ARCHETYPES = [
     rating: 4.9,
     phoneFormat: "(512) 554-1290",
     summary: "Multi-location practice modernizing patient intake, automated appointment reminders, and record pipelines.",
+  },
+  {
+    prefix: "Pinnacle",
+    suffix: "Center",
+    title: "Chief Medical Officer / Founder",
+    contactFirst: "Dr. Julian",
+    contactLast: "Mercer",
+    domainSuffix: "carecenter.com",
+    rating: 4.9,
+    phoneFormat: "(512) 618-3320",
+    summary: "Leading regional specialist center upgrading digital patient intake and cloud management.",
+  },
+  {
+    prefix: "Elevate",
+    suffix: "Group",
+    title: "Executive Director",
+    contactFirst: "Claire",
+    contactLast: "Montgomery",
+    domainSuffix: "elevategroup.co",
+    rating: 4.8,
+    phoneFormat: "(512) 749-8811",
+    summary: "Fast-expanding provider focusing on customer booking convenience and automated scheduling.",
+  },
+  {
+    prefix: "Metro",
+    suffix: "Practices",
+    title: "Managing Partner",
+    contactFirst: "Dr. Nathan",
+    contactLast: "Drake",
+    domainSuffix: "practices.org",
+    rating: 4.7,
+    phoneFormat: "(512) 833-2194",
+    summary: "Modern multi-location practice investing in high-conversion web workflows and digital CRM.",
+  },
+  {
+    prefix: "Beacon",
+    suffix: "Associates",
+    title: "Principal Director",
+    contactFirst: "Rachel",
+    contactLast: "Holt",
+    domainSuffix: "associates.net",
+    rating: 4.9,
+    phoneFormat: "(512) 942-5501",
+    summary: "Award-winning local commercial specialist modernizing appointment tracking and patient retention.",
   }
 ];
 
@@ -164,18 +208,44 @@ export async function searchGoogleMapsPlaces(
   // 2. High-Fidelity Query-Adapted Sourcing Simulation
   // Formats realistic local prospects tailored to the user's specific query & location
   const cleanQueryWord = query.replace(/[^a-zA-Z0-9 ]/g, "").split(" ")[0] || "Services";
-  const candidates: GoogleMapsCandidate[] = LOCAL_BUSINESS_ARCHETYPES.slice(0, limit).map((t, idx) => {
-    const compName = `${t.prefix} ${cleanQueryWord} ${t.suffix}`;
-    const slug = compName.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const cityRaw = location.split(",")[0].trim() || "Metro";
+  const citySlug = cityRaw.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  const areaCodeMap: Record<string, string> = {
+    chicago: "312",
+    austin: "512",
+    london: "+44 20",
+    "new york": "212",
+    nyc: "212",
+    miami: "305",
+    dallas: "214",
+    seattle: "206",
+    houston: "713",
+    sanfrancisco: "415",
+    losangeles: "310",
+  };
+  const areaCode = areaCodeMap[citySlug] || "312";
+
+  // Dynamic rotation so subsequent searches produce fresh unique leads
+  const offset = Math.floor(Math.random() * (LOCAL_BUSINESS_ARCHETYPES.length - limit));
+  const pool = [
+    ...LOCAL_BUSINESS_ARCHETYPES.slice(offset),
+    ...LOCAL_BUSINESS_ARCHETYPES.slice(0, offset),
+  ];
+
+  const candidates: GoogleMapsCandidate[] = pool.slice(0, limit).map((t, idx) => {
+    const compName = `${t.prefix} ${cleanQueryWord} of ${cityRaw}`;
+    const slug = `${t.prefix.toLowerCase()}${cleanQueryWord.toLowerCase()}-${citySlug}`;
     const domain = `${slug}.${t.domainSuffix.split(".").pop() || "com"}`;
+    const phone = t.phoneFormat.replace(/\(\d{3}\)/, `(${areaCode})`);
 
     return {
       company_name: compName,
       contact_name: `${t.contactFirst} ${t.contactLast}`,
       contact_title: t.title,
       company_domain: domain,
-      phone: t.phoneFormat,
-      location: `${100 + idx * 45} Main Commerce Blvd, ${location}`,
+      phone,
+      location: `${100 + idx * 45} Commerce Way, ${location}`,
       rating: t.rating,
       company_summary: `${compName} (${t.rating}★ Google Maps verified) operates in ${location}. ${t.summary}`,
       source: "google_maps",

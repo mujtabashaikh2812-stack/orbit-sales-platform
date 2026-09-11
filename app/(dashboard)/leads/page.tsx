@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getLeads, getLeadsSync, createLead, LeadDetail } from "@/lib/db/leads";
+import { getLeads, getLeadsSync, createLead, syncLeadsToStore, LeadDetail } from "@/lib/db/leads";
 import { LeadTable } from "@/components/leads/lead-table";
 import { LeadModal } from "@/components/leads/lead-modal";
 import { SourcingToolbar } from "@/components/leads/sourcing-toolbar";
@@ -18,7 +18,17 @@ export default function LeadsPage() {
     text: string;
   } | null>(null);
 
-  async function loadLeads() {
+  async function loadLeads(newLeads?: LeadDetail[]) {
+    if (newLeads && newLeads.length > 0) {
+      setLeads((prev) => {
+        const existingIds = new Set(prev.map((l) => l.id));
+        const fresh = newLeads.filter((l) => !existingIds.has(l.id));
+        const updated = [...fresh, ...prev];
+        syncLeadsToStore(updated);
+        return updated;
+      });
+      return;
+    }
     const data = await getLeads();
     setLeads(data);
   }
@@ -128,7 +138,7 @@ export default function LeadsPage() {
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <button
             type="button"
-            onClick={loadLeads}
+            onClick={() => loadLeads()}
             className="p-2 text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-raised transition-all rounded-xl shadow-sm active:scale-[0.98]"
             title="Refresh leads"
           >

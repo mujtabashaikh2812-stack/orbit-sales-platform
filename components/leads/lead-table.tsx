@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LeadDetail, updateLeadStage, getLeads } from "@/lib/db/leads";
 import { LeadStage } from "@/lib/types";
@@ -78,6 +78,10 @@ function renderSourceBadge(source: LeadDetail["source"]) {
 
 export function LeadTable({ initialLeads }: LeadTableProps) {
   const [leads, setLeads] = useState<LeadDetail[]>(initialLeads);
+
+  useEffect(() => {
+    setLeads(initialLeads);
+  }, [initialLeads]);
   const [selectedStage, setSelectedStage] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [recentlyChangedId, setRecentlyChangedId] = useState<string | null>(null);

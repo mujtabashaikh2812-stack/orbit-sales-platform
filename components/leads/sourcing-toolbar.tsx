@@ -17,10 +17,11 @@ import {
   Target
 } from "lucide-react";
 import { LeadSource } from "@/lib/types";
+import { LeadDetail } from "@/lib/db/leads";
 
 interface SourcingToolbarProps {
   sourcedCount: number;
-  onRefresh: () => void;
+  onRefresh: (newLeads?: LeadDetail[]) => void;
 }
 
 type SourcingChannel = "apollo" | "google_maps" | "contra" | "yellow_pages";
@@ -139,7 +140,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
             ? `Claude identified target niche and enrolled ${data.count} new prospects into your ledger.`
             : `Search completed. No new unique leads found (duplicates skipped to keep ledger clean).`,
         });
-        onRefresh();
+        onRefresh(data.leads);
       } else {
         setStatusMessage({
           type: "error",
@@ -182,7 +183,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
             ? `Successfully enrolled ${data.count} new candidate leads from ${channelLabel}`
             : `No new unique leads found matching criteria on ${channelLabel} (duplicates skipped)`,
         });
-        onRefresh();
+        onRefresh(data.leads);
       } else {
         setStatusMessage({
           type: "error",

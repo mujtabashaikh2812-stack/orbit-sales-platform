@@ -235,7 +235,15 @@ export const INITIAL_LEADS: LeadDetail[] = [
 ];
 
 // In-memory / storage bridge for preview & live fallback
-let localStore: LeadDetail[] = [...INITIAL_LEADS];
+const globalForOrbit = globalThis as unknown as {
+  orbitLeadsStore?: LeadDetail[];
+};
+
+if (!globalForOrbit.orbitLeadsStore) {
+  globalForOrbit.orbitLeadsStore = [...INITIAL_LEADS];
+}
+
+let localStore: LeadDetail[] = globalForOrbit.orbitLeadsStore;
 
 const CACHE_KEY = "orbit_leads_ledger_v1";
 
@@ -257,11 +265,16 @@ function getCachedStore(): LeadDetail[] {
 
 function persistStore(data: LeadDetail[]) {
   localStore = data;
+  globalForOrbit.orbitLeadsStore = data;
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
     } catch {}
   }
+}
+
+export function syncLeadsToStore(data: LeadDetail[]) {
+  persistStore(data);
 }
 
 export function getLeadsSync(): LeadDetail[] {
@@ -275,6 +288,24 @@ export function getLeadByIdSync(id: string): LeadDetail | null {
 }
 
 export async function getLeads(): Promise<LeadDetail[]> {
+  // Client-side: fetch authoritative leads from server API
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/leads");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.leads) && json.leads.length > 0) {
+          persistStore(json.leads);
+          return json.leads;
+        }
+      }
+    } catch {
+      // Offline fallback to localStorage
+    }
+    return getLeadsSync();
+  }
+
+  // Server-side: fetch from Supabase if configured, else server in-memory store
   if (isSupabaseConfigured()) {
     const supabase = createClient();
     const { data, error } = await supabase
@@ -294,7 +325,7 @@ export async function getLeads(): Promise<LeadDetail[]> {
     }
   }
 
-  return getLeadsSync();
+  return [...localStore];
 }
 
 export async function getLeadById(id: string): Promise<LeadDetail | null> {
