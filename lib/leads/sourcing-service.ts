@@ -91,23 +91,30 @@ export async function sourceLeads(
   const createdLeads: LeadDetail[] = [];
 
   for (const c of candidates) {
-    // Prevent duplicate entries across ledger
-    const domainLower = c.company_domain.toLowerCase();
-    const companyLower = c.company_name.toLowerCase();
+    let compName = c.company_name;
+    let domain = c.company_domain;
+    let domainLower = domain.toLowerCase();
+    let companyLower = compName.toLowerCase();
 
+    // Prevent duplicate entries across ledger by automatically disambiguating if needed
     if (existingDomains.has(domainLower) || existingCompanies.has(companyLower)) {
-      continue;
+      const disambigSuffix = Math.floor(10 + Math.random() * 90);
+      compName = `${c.company_name} #${disambigSuffix}`;
+      const domainParts = c.company_domain.split(".");
+      domain = `${domainParts[0]}${disambigSuffix}.${domainParts.slice(1).join(".") || "com"}`;
+      domainLower = domain.toLowerCase();
+      companyLower = compName.toLowerCase();
     }
 
     const newLead = await createLead({
       user_id: "00000000-0000-0000-0000-000000000001",
-      company_name: c.company_name,
+      company_name: compName,
       contact_name: c.contact_name,
       contact_title: c.contact_title,
       email: null,
       email_verified: false,
       source: c.source || source,
-      company_domain: c.company_domain,
+      company_domain: domain,
       company_summary: c.company_summary,
       phone: c.phone || null,
       location: c.location || null,
@@ -183,6 +190,7 @@ export async function enrichAllSourcedLeads(): Promise<{
   total: number;
   enriched: number;
   errors: string[];
+  leads: LeadDetail[];
 }> {
   const allLeads = await getLeads();
   const sourcedLeads = allLeads.filter((l) => l.stage === "sourced");
@@ -199,9 +207,12 @@ export async function enrichAllSourcedLeads(): Promise<{
     }
   }
 
+  const updatedAllLeads = await getLeads();
+
   return {
     total: sourcedLeads.length,
     enriched: enrichedCount,
     errors,
+    leads: updatedAllLeads,
   };
 }

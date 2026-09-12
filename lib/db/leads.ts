@@ -239,13 +239,64 @@ const globalForOrbit = globalThis as unknown as {
   orbitLeadsStore?: LeadDetail[];
 };
 
+function getNodeModule(name: string) {
+  if (typeof window !== "undefined") return null;
+  try {
+    const r = eval("require");
+    return r(name);
+  } catch {
+    return null;
+  }
+}
+
+function getServerStoragePath(): string | null {
+  const path = getNodeModule("path");
+  if (!path) return null;
+  try {
+    return path.join(process.cwd(), ".orbit_leads_store.json");
+  } catch {
+    return null;
+  }
+}
+
+function loadServerStore(): LeadDetail[] | null {
+  const fs = getNodeModule("fs");
+  const filePath = getServerStoragePath();
+  if (!fs || !filePath) return null;
+  try {
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function saveServerStore(data: LeadDetail[]) {
+  const fs = getNodeModule("fs");
+  const filePath = getServerStoragePath();
+  if (!fs || !filePath) return;
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+  } catch {}
+}
+
 if (!globalForOrbit.orbitLeadsStore) {
-  globalForOrbit.orbitLeadsStore = [...INITIAL_LEADS];
+  const diskData = loadServerStore();
+  globalForOrbit.orbitLeadsStore = diskData || [...INITIAL_LEADS];
 }
 
 let localStore: LeadDetail[] = globalForOrbit.orbitLeadsStore;
 
 const CACHE_KEY = "orbit_leads_ledger_v1";
+
+export function generateLeadId(): string {
+  const randomSuffix = Math.random().toString(36).substring(2, 9);
+  return `lead-${Date.now()}-${randomSuffix}`;
+}
 
 function getCachedStore(): LeadDetail[] {
   if (typeof window !== "undefined") {
@@ -270,6 +321,8 @@ function persistStore(data: LeadDetail[]) {
     try {
       window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
     } catch {}
+  } else {
+    saveServerStore(data);
   }
 }
 
@@ -288,10 +341,13 @@ export function getLeadByIdSync(id: string): LeadDetail | null {
 }
 
 export async function getLeads(): Promise<LeadDetail[]> {
-  // Client-side: fetch authoritative leads from server API
+  // Client-side: fetch authoritative leads from server API without cache
   if (typeof window !== "undefined") {
     try {
-      const res = await fetch("/api/leads");
+      const res = await fetch("/api/leads", {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.leads) && json.leads.length > 0) {
@@ -355,16 +411,17 @@ export async function createLead(
   input: Omit<Lead, "id" | "created_at" | "updated_at" | "stage_updated_at">
 ): Promise<LeadDetail> {
   const now = new Date().toISOString();
+  const id = generateLeadId();
   const newLead: LeadDetail = {
     ...input,
-    id: `lead-${Date.now()}`,
+    id,
     stage_updated_at: now,
     created_at: now,
     updated_at: now,
     stage_history: [
       {
-        id: `sh-${Date.now()}`,
-        lead_id: `lead-${Date.now()}`,
+        id: `sh-${id.replace("lead-", "")}`,
+        lead_id: id,
         from_stage: null,
         to_stage: input.stage,
         changed_at: now,
@@ -396,6 +453,25 @@ export async function createLead(
     if (!error && data) {
       return data as LeadDetail;
     }
+  }
+
+  // Client-side API sync
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lead: newLead }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.lead) {
+          localStore.unshift(json.lead);
+          persistStore([...localStore]);
+          return json.lead;
+        }
+      }
+    } catch {}
   }
 
   localStore.unshift(newLead);
@@ -430,6 +506,28 @@ export async function updateLead(
     if (!error && data) {
       return data as LeadDetail;
     }
+  }
+
+  // Client-side API sync
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, partial }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.lead) {
+          const index = localStore.findIndex((l) => l.id === id);
+          if (index !== -1) {
+            localStore[index] = json.lead;
+            persistStore([...localStore]);
+          }
+          return json.lead;
+        }
+      }
+    } catch {}
   }
 
   const index = localStore.findIndex((l) => l.id === id);
@@ -479,8 +577,30 @@ export async function updateLeadStage(
     return getLeadById(id);
   }
 
+  // Client-side API sync
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, stage: newStage, triggeredBy }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.lead) {
+          const index = localStore.findIndex((l) => l.id === id);
+          if (index !== -1) {
+            localStore[index] = json.lead;
+            persistStore([...localStore]);
+          }
+          return json.lead;
+        }
+      }
+    } catch {}
+  }
+
   const historyItem: StageHistory = {
-    id: `sh-${Date.now()}`,
+    id: `sh-${id.replace("lead-", "")}-${Date.now()}`,
     lead_id: id,
     from_stage: oldStage,
     to_stage: newStage,

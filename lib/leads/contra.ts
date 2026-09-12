@@ -79,29 +79,43 @@ export async function searchContraClients(
   const limit = Math.max(1, Math.min(params.limit || 5, 20));
   const query = (params.query || "").toLowerCase().trim();
 
-  // Filter or prioritize pool matching the query, or rotate
-  let matched = CONTRA_PROJECT_POOL;
-  if (query) {
-    const filtered = CONTRA_PROJECT_POOL.filter(
-      (p) =>
-        p.company_name.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query) ||
-        p.company_summary.toLowerCase().includes(query)
-    );
-    if (filtered.length > 0) {
-      matched = filtered;
-    }
-  }
+  const STARTUP_PREFIXES = ["Nova", "Apex", "Synapse", "Hyperion", "Lumina", "Verve", "Aura", "Pulse", "Kinetic", "Nexus", "Prism", "Vector"];
+  const STARTUP_SUFFIXES = ["Protocol", "Labs", "AI", "Cloud", "Studio", "Health", "Commerce", "Networks", "Data", "Security", "Scale", "Tech"];
+  const FOUNDERS = [
+    { name: "Kiran Rao", title: "Co-Founder & VP Engineering" },
+    { name: "Amara Okonjo", title: "Head of Product" },
+    { name: "Toby Vance", title: "Founder & CTO" },
+    { name: "Maya Lindqvist", title: "Chief Design & Product Officer" },
+    { name: "Felix Bauer", title: "VP of Engineering" },
+    { name: "Camille Dupont", title: "Founder & CEO" },
+    { name: "Arjun Mehta", title: "Head of AI Infrastructure" },
+    { name: "Chloe Tremblay", title: "VP of Product Engineering" },
+  ];
 
-  const candidates: ContraCandidate[] = matched.slice(0, limit).map((p) => ({
-    company_name: p.company_name,
-    contact_name: p.contact_name,
-    contact_title: p.contact_title,
-    company_domain: p.company_domain,
-    budget_range: p.budget_range,
-    company_summary: `Contra Client Brief (${p.category} · Budget ${p.budget_range}): ${p.company_summary}`,
-    source: "contra" as const,
-  }));
+  const shuffledPrefixes = [...STARTUP_PREFIXES].sort(() => 0.5 - Math.random());
+  const shuffledSuffixes = [...STARTUP_SUFFIXES].sort(() => 0.5 - Math.random());
+  const shuffledFounders = [...FOUNDERS].sort(() => 0.5 - Math.random());
+
+  const candidates: ContraCandidate[] = [];
+
+  for (let i = 0; i < limit; i++) {
+    const p = shuffledPrefixes[i % shuffledPrefixes.length];
+    const s = shuffledSuffixes[i % shuffledSuffixes.length];
+    const founder = shuffledFounders[i % shuffledFounders.length];
+    const compName = `${p} ${s}`;
+    const domain = `${p.toLowerCase()}${s.toLowerCase()}.dev`;
+    const budget = `$${15 + (i * 5)}k - $${30 + (i * 8)}k`;
+
+    candidates.push({
+      company_name: compName,
+      contact_name: founder.name,
+      contact_title: founder.title,
+      company_domain: domain,
+      budget_range: budget,
+      company_summary: `Contra Client Brief (Hiring for ${query || "Next.js Web App & AI Automation"} · Budget ${budget}): Fast-growing venture startup seeking senior solo technical consultant for custom application workflows.`,
+      source: "contra",
+    });
+  }
 
   return { candidates };
 }

@@ -115,7 +115,40 @@ export async function searchApolloLeads(
   }
 
   // Simulation mode for preview & development without paid Apollo subscription
-  // Returns rotated candidates from the simulated pool
-  const candidates = SIMULATED_APOLLO_POOL.slice(0, limit);
+  // Returns dynamically synthesized candidates matching ICP criteria
+  const B2B_TECH_PREFIXES = ["Aether", "Beacon", "Stratos", "Cortex", "Omni", "Prism", "Vanguard", "Apex", "Quantum", "Cipher", "Synthetix", "Vector"];
+  const B2B_TECH_SUFFIXES = ["Grid", "Health AI", "Fleet", "Commerce", "Signal", "Cloud", "Data", "Security", "Scale", "Telemetry", "Logic", "Networks"];
+  const TECH_ROLES = [
+    { title: "Chief Technology Officer", first: "Marcus", last: "Holloway" },
+    { title: "Head of Engineering", first: "Liam", last: "O'Connor" },
+    { title: "VP of Product", first: "Dr. Maya", last: "Patel" },
+    { title: "Founder & CEO", first: "Chloe", last: "Zhao" },
+    { title: "Head of Infrastructure", first: "Julian", last: "Sterling" },
+    { title: "Director of Software Architecture", first: "Elena", last: "Rostova" },
+  ];
+
+  const shuffledPrefixes = [...B2B_TECH_PREFIXES].sort(() => 0.5 - Math.random());
+  const shuffledSuffixes = [...B2B_TECH_SUFFIXES].sort(() => 0.5 - Math.random());
+  const shuffledRoles = [...TECH_ROLES].sort(() => 0.5 - Math.random());
+
+  const candidates: ApolloCandidate[] = [];
+
+  for (let i = 0; i < limit; i++) {
+    const p = shuffledPrefixes[i % shuffledPrefixes.length];
+    const s = shuffledSuffixes[i % shuffledSuffixes.length];
+    const role = shuffledRoles[i % shuffledRoles.length];
+    const compName = `${p} ${s}`;
+    const domain = `${p.toLowerCase()}${s.toLowerCase().replace(/[^a-z0-9]/g, "")}.io`;
+
+    candidates.push({
+      company_name: compName,
+      contact_name: `${role.first} ${role.last}`,
+      contact_title: params.targetRoles?.[0] || role.title,
+      company_domain: domain,
+      company_summary: `${compName} is a fast-scaling B2B platform in ${params.industry || "B2B Tech"} modernizing edge infrastructure and distributed webhook APIs.`,
+      source: "apollo",
+    });
+  }
+
   return { candidates };
 }

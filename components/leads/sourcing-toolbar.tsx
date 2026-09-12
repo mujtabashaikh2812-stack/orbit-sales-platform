@@ -140,7 +140,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
             ? `Claude identified target niche and enrolled ${data.count} new prospects into your ledger.`
             : `Search completed. No new unique leads found (duplicates skipped to keep ledger clean).`,
         });
-        onRefresh(data.leads);
+        onRefresh(data.allLeads || data.leads);
       } else {
         setStatusMessage({
           type: "error",
@@ -183,7 +183,7 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
             ? `Successfully enrolled ${data.count} new candidate leads from ${channelLabel}`
             : `No new unique leads found matching criteria on ${channelLabel} (duplicates skipped)`,
         });
-        onRefresh(data.leads);
+        onRefresh(data.allLeads || data.leads);
       } else {
         setStatusMessage({
           type: "error",
@@ -218,7 +218,11 @@ export function SourcingToolbar({ sourcedCount, onRefresh }: SourcingToolbarProp
           type: "success",
           text: `Enriched ${data.summary.enriched} of ${data.summary.total} pending leads with verified deliverable emails`,
         });
-        onRefresh();
+        if (data.leads && Array.isArray(data.leads)) {
+          onRefresh(data.leads);
+        } else {
+          onRefresh();
+        }
       } else {
         setStatusMessage({
           type: "error",

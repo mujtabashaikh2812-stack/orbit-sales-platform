@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { sourceLeadsFromPrompt } from "@/lib/leads/sourcing-service";
+import { getLeads } from "@/lib/db/leads";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function POST(request: Request) {
   try {
@@ -10,7 +14,7 @@ export async function POST(request: Request) {
     if (!prompt) {
       return NextResponse.json(
         { success: false, error: "Please provide a search prompt (e.g., 'Find dental clinics in Austin, TX for website redesign')." },
-        { status: 400 }
+        { status: 400, headers: { "Cache-Control": "no-store, max-age=0" } }
       );
     }
 
@@ -19,18 +23,27 @@ export async function POST(request: Request) {
     if (result.error) {
       return NextResponse.json(
         { success: false, error: result.error },
-        { status: 500 }
+        { status: 500, headers: { "Cache-Control": "no-store, max-age=0" } }
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      count: result.count,
-      leads: result.created,
-      parsed: result.parsed,
-    });
+    const allLeads = await getLeads();
+
+    return NextResponse.json(
+      {
+        success: true,
+        count: result.count,
+        leads: result.created,
+        allLeads,
+        parsed: result.parsed,
+      },
+      { headers: { "Cache-Control": "no-store, max-age=0" } }
+    );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to execute prompt sourcing";
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500, headers: { "Cache-Control": "no-store, max-age=0" } }
+    );
   }
 }

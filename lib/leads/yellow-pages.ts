@@ -80,17 +80,81 @@ export async function searchYellowPages(
   const limit = Math.max(1, Math.min(params.limit || 5, 20));
   const category = (params.category || "Commercial Services").trim();
   const location = (params.location || "Chicago, IL").trim();
+  const cityRaw = location.split(",")[0].trim() || "Metro";
+  const citySlug = cityRaw.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-  const candidates: YellowPagesCandidate[] = DIRECTORY_ARCHETYPES.slice(0, limit).map((d, idx) => ({
-    company_name: d.company_name,
-    contact_name: d.contact_name,
-    contact_title: d.contact_title,
-    company_domain: d.domain,
-    phone: d.phone,
-    location: `${200 + idx * 50} Enterprise Parkway, ${location}`,
-    company_summary: `YellowPages Verified (${category} · ${location}): ${d.summary}`,
-    source: "yellow_pages" as const,
-  }));
+  const PREFIXES = [
+    "Midwest",
+    "Great Lakes",
+    "Apex",
+    "Continental",
+    "Centennial",
+    "Pioneer",
+    "Metro",
+    "Tri-State",
+    "Vanguard",
+    "Alliance",
+    "Precision",
+    "Summit",
+    "Horizon",
+    "Keystone",
+    "Industrial"
+  ];
+
+  const SUFFIXES = [
+    "Logistics & Freight",
+    "Express Freightways",
+    "Industrial Systems",
+    "Supply Chain Network",
+    "Distribution Group",
+    "Commercial Operations",
+    "Hauling & Cargo",
+    "3PL Solutions",
+    "Fleet Services",
+    "Fabrication Works",
+    "Environmental Services",
+    "Contracting Partners"
+  ];
+
+  const CONTACTS = [
+    { name: "Donald Sterling", title: "Managing Director & Operations VP" },
+    { name: "Robert MacIntyre", title: "President & Chief Engineer" },
+    { name: "Catherine Holloway", title: "Director of Compliance & Logistics" },
+    { name: "Thomas Gallagher", title: "Executive Vice President" },
+    { name: "Arthur Pendelton", title: "Founder & General Manager" },
+    { name: "Helena Zhou", title: "Chief Operating Officer" },
+    { name: "Marcus Fletcher", title: "VP of Supply Chain Telemetry" },
+    { name: "Daniel O'Reilly", title: "Director of Transportation" },
+    { name: "Rachel Vance", title: "Head of Commercial Dispatch" },
+  ];
+
+  const shuffledPrefixes = [...PREFIXES].sort(() => 0.5 - Math.random());
+  const shuffledSuffixes = [...SUFFIXES].sort(() => 0.5 - Math.random());
+  const shuffledContacts = [...CONTACTS].sort(() => 0.5 - Math.random());
+
+  const candidates: YellowPagesCandidate[] = [];
+
+  for (let i = 0; i < limit; i++) {
+    const pref = shuffledPrefixes[i % shuffledPrefixes.length];
+    const suff = shuffledSuffixes[i % shuffledSuffixes.length];
+    const contact = shuffledContacts[i % shuffledContacts.length];
+
+    const compName = `${pref} ${suff} of ${cityRaw}`;
+    const slug = `${pref.toLowerCase()}${suff.toLowerCase().replace(/[^a-z0-9]/g, "")}-${citySlug}`;
+    const domain = `${slug}.com`;
+    const phone = `(312) 555-${String(1000 + Math.floor(Math.random() * 8999))}`;
+
+    candidates.push({
+      company_name: compName,
+      contact_name: contact.name,
+      contact_title: contact.title,
+      company_domain: domain,
+      phone,
+      location: `${200 + (i + 1) * 50} Enterprise Parkway, ${location}`,
+      company_summary: `YellowPages Verified (${category} · ${location}): Leading provider of specialized commercial freight, warehousing dispatch, and industrial logistics.`,
+      source: "yellow_pages",
+    });
+  }
 
   return { candidates };
 }

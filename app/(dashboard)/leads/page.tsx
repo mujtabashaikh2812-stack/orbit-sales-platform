@@ -21,16 +21,27 @@ export default function LeadsPage() {
   async function loadLeads(newLeads?: LeadDetail[]) {
     if (newLeads && newLeads.length > 0) {
       setLeads((prev) => {
-        const existingIds = new Set(prev.map((l) => l.id));
-        const fresh = newLeads.filter((l) => !existingIds.has(l.id));
-        const updated = [...fresh, ...prev];
+        const map = new Map<string, LeadDetail>();
+        // New leads override existing ones by ID (e.g., enriched data replaces un-enriched)
+        for (const nl of newLeads) {
+          if (nl && nl.id) map.set(nl.id, nl);
+        }
+        // Preserve any prior leads not in newLeads
+        for (const pl of prev) {
+          if (pl && pl.id && !map.has(pl.id)) {
+            map.set(pl.id, pl);
+          }
+        }
+        const updated = Array.from(map.values()).sort(
+          (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+        );
         syncLeadsToStore(updated);
         return updated;
       });
       return;
     }
     const data = await getLeads();
-    setLeads(data);
+    setLeads([...data]);
   }
 
   useEffect(() => {
@@ -222,7 +233,10 @@ export default function LeadsPage() {
           </div>
         </div>
       ) : (
-        <LeadTable key={leads.length} initialLeads={leads} />
+        <LeadTable
+          key={`ledger-${leads.length}-${leads.filter((l) => l.stage === "enriched").length}-${leads.filter((l) => l.stage === "sourced").length}`}
+          initialLeads={leads}
+        />
       )}
 
       {/* Add Lead Modal */}

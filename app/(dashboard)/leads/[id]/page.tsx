@@ -103,6 +103,9 @@ export default function LeadDetailPage({
       const data = await res.json();
       if (data.success && data.lead) {
         setLead(data.lead);
+        const { syncLeadsToStore, getLeadsSync } = await import("@/lib/db/leads");
+        const all = getLeadsSync().map((l) => (l.id === data.lead.id ? data.lead : l));
+        syncLeadsToStore(all);
       } else {
         setEnrichError(data.error || "Enrichment failed");
       }
